@@ -1,3 +1,5 @@
+import { Footer } from "./components/footer";
+import { Navbar } from "./components/nav";
 
 const LandingPageLayout = ( {
   children,
@@ -6,9 +8,11 @@ const LandingPageLayout = ( {
 }>) => {
   return (
     <div className="h-full bg-slate-100">
+        <Navbar />
         <main>
             {children}
         </main>
+        <Footer />
     </div>
   );
 }
