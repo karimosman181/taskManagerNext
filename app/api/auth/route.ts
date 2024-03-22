@@ -1,4 +1,4 @@
-import { User } from '../../models/associations';
+import { User } from '@/models/associations';
 import { NextRequest } from 'next/server';
 import { setUserDataCookie, logout } from '../../../lib/server/auth';
 import { apiErrorResponse } from '../../../lib/server/api/errorResponse';

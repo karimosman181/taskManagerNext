@@ -8,7 +8,7 @@ import { Logo } from '@/components/logo';
 import { seedUsers, syncDb } from '@/lib/utils/db/syncDb';
 import { useApp } from '@/contexts/AppContext';
 
-const EXECUTE = true;
+const EXECUTE = false;
 
 export default function SeedDbPage() {
 	const { isLoading, setIsLoading } = useApp();

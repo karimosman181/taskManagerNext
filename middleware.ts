@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyJwtToken } from '@/lib/server/auth';
 
 // Add whatever paths you want to PROTECT here
-const authRoutes = ['/app/*', '/account/*', '/api/*', '/admin/*'];
+const authRoutes = ['/app/*', '/account/*', '/admin/*'];
+
+// , '/api/*'
 
 // Function to match the * wildcard character
 function matchesWildcard(path: string, pattern: string): boolean {

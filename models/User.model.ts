@@ -1,4 +1,4 @@
-'use server';
+// 'use server';
 import { DataTypes, Model, Op } from 'sequelize';
 import sequelize from '@/config/sequelize';
 

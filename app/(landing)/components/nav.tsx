@@ -10,7 +10,7 @@ export const Navbar = () => {
         <Logo />
         <div className="space-x-4 md:block md:w-auto flex items-center justify-between w-full">
           <Button size="sm" variant="outline" asChild>
-            <Link href="/sign-in">
+            <Link href="/login">
               Login
             </Link>
           </Button>
