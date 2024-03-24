@@ -32,7 +32,7 @@ export interface I_User {
 export interface I_UserCreate
 	extends Optional<
 		I_User,
-		'id' | 'avatar' | 'role' | 'status' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'lastLogin' | 'lastSeen'
+		'id' | 'avatar' | 'role' | 'phone' |'status' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'lastLogin' | 'lastSeen'
 	> {}
 
 export interface I_UserPublic extends Omit<I_User, 'password'> {}

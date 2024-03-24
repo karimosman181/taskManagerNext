@@ -87,6 +87,6 @@ export const userSchema = yup.object().shape({
 	phone: yup
 		.string()
 		.label('Phone')
-		.required(userSchemaConstraints.phone.required)
+		// .required(userSchemaConstraints.phone.required)
 		.matches(userSchemaConstraints.phone.match, 'Phone number is not valid'),
 });
