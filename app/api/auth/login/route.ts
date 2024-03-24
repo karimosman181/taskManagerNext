@@ -7,7 +7,6 @@ import { apiErrorResponse } from '@/lib/server/api/errorResponse';
 export interface I_ApiUserLoginRequest {
 	login: string;
 	password: string;
-	tsToken: string;
 	code?: string;
 }
 
@@ -21,7 +20,7 @@ export async function POST(request: NextRequest) {
 	const body = (await request.json()) as I_ApiUserLoginRequest;
 
 	// trim all input values
-	const { login, password, tsToken } = Object.fromEntries(
+	const { login, password } = Object.fromEntries(
 		Object.entries(body).map(([key, value]) => [key, value?.trim()]),
 	) as I_ApiUserLoginRequest;
 	if (!login || !password) {

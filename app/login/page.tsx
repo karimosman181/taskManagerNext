@@ -31,7 +31,6 @@ export default function LoginForm() {
 	// State
 	const [error, setError] = useState('');
 	const [loginIsComplete, setLoginIsComplete] = useState(false);
-	const [tsToken, setTsToken] = useState('');
 
 	// Handlers
 	const handleLogin = async () => {
@@ -46,7 +45,6 @@ export default function LoginForm() {
 			const payload: I_ApiUserLoginRequest = {
 				login: loginRef.current?.value,
 				password: passwordRef.current?.value,
-				tsToken: tsToken,
 			};
 
 			const response = await fetch('/api/auth/login', {
