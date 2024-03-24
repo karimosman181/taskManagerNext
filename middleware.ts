@@ -65,7 +65,7 @@ export async function middleware(request: NextRequest) {
 	}
 	let redirectToApp = false;
 	// Redirect login to app if already logged in
-	if (request.nextUrl.pathname === '/login') {
+	if (request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/signup') {
 		const token = request.cookies.get('token');
 		if (token) {
 			try {
