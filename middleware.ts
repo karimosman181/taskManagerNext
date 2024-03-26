@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyJwtToken } from '@/lib/server/auth';
 
 // Add whatever paths you want to PROTECT here
-const authRoutes = ['/app/*', '/account/*', '/admin/*'];
+const authRoutes = ['/app/*', '/account/*','/api/*' ,'/admin/*'];
 
 // , '/api/*'
 
