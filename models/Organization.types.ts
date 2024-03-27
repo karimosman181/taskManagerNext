@@ -11,17 +11,17 @@ export type T_OrganizationStatus = keyof typeof E_OrganizationStatus;
 export interface I_Organization {
 	id: string;
 	name: string;
-	discription: string;
+	description: string;
     avatar: string;
 	status: T_OrganizationStatus;
 	createdAt: Date;
 	updatedAt: Date;
 	deletedAt: Date;
-    users: I_User[];
+    // users: I_User[];
 }
 
 export interface I_OrganizationCreate
 	extends Optional<
 		I_Organization,
-		'id' | 'avatar' |'status' | 'createdAt' | 'updatedAt' | 'deletedAt' | 'users'
+		'id' | 'avatar' |'status' | 'createdAt' | 'updatedAt' | 'deletedAt'
 	> {}
