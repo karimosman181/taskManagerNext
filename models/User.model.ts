@@ -8,7 +8,12 @@ import { getJwt, logout } from '@/lib/server/auth';
 import authConfig from '@/config/authConfig';
 import { userSchemaConstraints, USER_ROLES, USER_STATUS } from '../yup/user.schema';
 
+import { HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyHasAssociationMixin, Association, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
+
+import UserOrganization from './UserOrganization.model';
+
 import { I_User, I_UserCreate, I_UserPublic } from './User.types';
+import Organization from './Organization.model';
 
 class User extends Model<I_User, I_UserCreate> implements I_User {
 	public id!: I_User['id'];
@@ -28,6 +33,18 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 
 	public static readonly jwtExpires = authConfig.jwtExpires;
 
+	public getUserOrganizations!: HasManyGetAssociationsMixin<UserOrganization>; // Note the null assertions!
+ 	public addUserOrganization!: HasManyAddAssociationMixin<UserOrganization, number>;
+  	public hasUserOrganization!: HasManyHasAssociationMixin<UserOrganization, number>;
+  	public countUserOrganizations!: HasManyCountAssociationsMixin;
+  	public createUserOrganization!: HasManyCreateAssociationMixin<UserOrganization>;
+
+  	public readonly userOrganizations?: UserOrganization[]; 
+
+  	public static associations: {
+    	userOrganizations: Association<User, UserOrganization>;
+  	};
+
 	public static async getByLoginId(loginId: string) {
 		const user = await User.findOne({
 			where: {
@@ -42,6 +59,49 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 		return compareSync(password, this.password);
 	}
 
+	public static async signup(firstName: I_User['firstName'], lastName: I_User['lastName'], email: I_User['email'], password: I_User['password'], role: I_User['role'] = 'admin', status:I_User['status'] = 'active'){
+		try {
+			const checkUser = await User.getByLoginId(email);
+
+			if(checkUser){
+				throw new Error('Email Already taken !!');
+			} 
+
+		const newUser = await User.create({
+		    firstName: firstName,
+		    lastName: lastName,
+		    email: email,
+		    password: password,
+            role: role,
+		    status: status,
+	    });
+
+		const UserId = newUser.id;
+
+		const newOrganization = await Organization.create({
+			name: "Personal Organization",
+			description: "Personal Organization",
+		})
+
+		const newOrganizationId = newOrganization.id;
+
+		const userOrganization = await newUser.createUserOrganization({
+			userId: UserId,
+			organizationId: newOrganizationId,
+			role: "admin",
+		});
+
+		const currentUser = await User.findByPk(UserId, {
+    		include: [User.associations.userOrganizations],
+    		rejectOnEmpty: true, // Specifying true here removes `null` from the return type!
+  		});
+
+		return currentUser;
+		} catch (error: any) {
+			log.error(error);
+			throw new Error('Oops, Something went wrong !!!');
+		}
+	}
 	public static async login(login: string, password: I_User['password']) {
 		try {
 			const user = await User.getByLoginId(login);
@@ -223,5 +283,12 @@ User.init(
 		],
 	},
 );
+
+
+User.hasMany(UserOrganization, {
+  	sourceKey: 'id',
+  	foreignKey: 'userId',
+ 	as: 'userOrganizations' // this determines the name in `associations`!
+});
 
 export default User;

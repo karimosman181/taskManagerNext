@@ -6,6 +6,9 @@ import { I_Organization,I_OrganizationCreate, } from './Organization.types';
 import { I_User } from './User.types';
 import { ORGANIZATION_STATUS, organizationSchemaConstraints } from '@/yup/organiztion.schema';
 import User from './User.model';
+import UserOrganization from './UserOrganization.model';
+
+import { HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyHasAssociationMixin, Association, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
 
 
 class Organization extends Model<I_Organization, I_OrganizationCreate> implements I_Organization {
@@ -18,6 +21,19 @@ class Organization extends Model<I_Organization, I_OrganizationCreate> implement
 	public updatedAt!: I_Organization['updatedAt'];
 	public deletedAt!: I_Organization['deletedAt'];
 	// public users!: I_Organization['users'];
+
+	
+	public getUserOrganizations!: HasManyGetAssociationsMixin<UserOrganization>; // Note the null assertions!
+ 	public addUserOrganization!: HasManyAddAssociationMixin<UserOrganization, number>;
+  	public hasUserOrganization!: HasManyHasAssociationMixin<UserOrganization, number>;
+  	public countUserOrganizations!: HasManyCountAssociationsMixin;
+  	public createUserOrganization!: HasManyCreateAssociationMixin<UserOrganization>;
+
+  	public readonly userOrganizations?: UserOrganization[]; 
+
+  	public static associations: {
+    	projects: Association<Organization, UserOrganization>;
+  	};
 
 }
 
@@ -89,5 +105,12 @@ Organization.init(
 		},
 	},
 );
+
+
+	Organization.hasMany(UserOrganization, {
+  		sourceKey: 'id',
+  		foreignKey: 'organizationIdId',
+ 		as: 'UserOrganizations' // this determines the name in `associations`!
+	});
 
 export default Organization;

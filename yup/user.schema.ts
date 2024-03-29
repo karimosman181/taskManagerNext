@@ -1,6 +1,4 @@
 import * as yup from 'yup';
-import yp from 'yup-password';
-
 import { E_UserRole, E_UserStatus } from '@/models/User.types';
 
 export const USER_STATUS = Object.keys(E_UserStatus);
