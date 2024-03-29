@@ -9,7 +9,7 @@ import { useApp } from '@/contexts/AppContext';
 // import { useRouter } from 'next/router';
 import { useRouter } from 'next/navigation'
 
-import { I_ApiUserSignupRequest, I_ApiUserSignupResponse } from '../api/auth/signup/route';
+import { I_ApiUserSignupRequest, I_ApiUserSignupResponse } from '../auth/signup/route';
 
 export default function SignupForm() {
      const { userData, loadUserData, isLoading, setIsLoading } = useApp();
@@ -51,7 +51,7 @@ export default function SignupForm() {
 				  password: passwordRef.current?.value,
 			  };
       
-        const response = await fetch('/api/auth/signup', {
+        const response = await fetch('/auth/signup', {
 			    method: 'POST',
 				  headers: {
 					  'Content-Type': 'application/json',

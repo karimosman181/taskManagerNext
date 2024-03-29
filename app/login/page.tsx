@@ -9,7 +9,7 @@ import { useApp } from '@/contexts/AppContext';
 // import { useRouter } from 'next/router';
 import { useRouter } from 'next/navigation'; 
 
-import { I_ApiUserLoginRequest, I_ApiUserLoginResponse } from '../api/auth/login/route';
+import { I_ApiUserLoginRequest, I_ApiUserLoginResponse } from '../auth/login/route';
 import {
   IconBrandGithub,
   IconBrandGoogle,
@@ -47,7 +47,7 @@ export default function LoginForm() {
 				password: passwordRef.current?.value,
 			};
 
-			const response = await fetch('/api/auth/login', {
+			const response = await fetch('/auth/login', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
