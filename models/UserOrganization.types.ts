@@ -19,5 +19,5 @@ export interface I_UserOrg {
 export interface I_UserOrgCreate
 	extends Optional<
 		I_UserOrg,
-		'id' | 'createdAt' | 'updatedAt' | 'deletedAt'
+		'id' | 'userId' | 'organizationId' |'createdAt' | 'updatedAt' | 'deletedAt'
 	> {}

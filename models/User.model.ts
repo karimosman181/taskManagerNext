@@ -18,7 +18,6 @@ import Organization from './Organization.model';
 class User extends Model<I_User, I_UserCreate> implements I_User {
 	public id!: I_User['id'];
 	public email!: I_User['email'];
-	public phone!: I_User['phone'];
 	public password!: I_User['password'];
 	public firstName!: I_User['firstName'];
 	public lastName!: I_User['lastName'];
@@ -34,8 +33,8 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 	public static readonly jwtExpires = authConfig.jwtExpires;
 
 	public getUserOrganizations!: HasManyGetAssociationsMixin<UserOrganization>; // Note the null assertions!
- 	public addUserOrganization!: HasManyAddAssociationMixin<UserOrganization, number>;
-  	public hasUserOrganization!: HasManyHasAssociationMixin<UserOrganization, number>;
+ 	public addUserOrganization!: HasManyAddAssociationMixin<UserOrganization, UserOrganization['id']>;
+  	public hasUserOrganization!: HasManyHasAssociationMixin<UserOrganization, UserOrganization['id']>;
   	public countUserOrganizations!: HasManyCountAssociationsMixin;
   	public createUserOrganization!: HasManyCreateAssociationMixin<UserOrganization>;
 
@@ -48,7 +47,7 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 	public static async getByLoginId(loginId: string) {
 		const user = await User.findOne({
 			where: {
-				[Op.or]: [{ phone: loginId }, { email: loginId.toLowerCase() }],
+				email: loginId.toLowerCase(),
 			},
 		});
 
@@ -86,10 +85,10 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 		const newOrganizationId = newOrganization.id;
 
 		const userOrganization = await newUser.createUserOrganization({
-			userId: UserId,
-			organizationId: newOrganizationId,
 			role: "admin",
 		});
+
+		await newOrganization.addUserOrganization(userOrganization);
 
 		const currentUser = await User.findByPk(UserId, {
     		include: [User.associations.userOrganizations],
@@ -184,16 +183,6 @@ User.init(
 				max: userSchemaConstraints.email.maxLength,
 			},
 		},
-		phone: {
-			type: DataTypes.STRING,
-			allowNull: true,
-			unique: true,
-			validate: {
-				is: userSchemaConstraints.phone.match,
-				min: userSchemaConstraints.phone.minLength,
-				max: userSchemaConstraints.phone.maxLength,
-			},
-		},
 		password: {
 			type: DataTypes.STRING,
 			allowNull: false,
@@ -274,10 +263,6 @@ User.init(
 		indexes: [
 			{
 				fields: ['email'],
-				unique: true,
-			},
-			{
-				fields: ['phone'],
 				unique: true,
 			},
 		],

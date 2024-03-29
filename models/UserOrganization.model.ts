@@ -28,12 +28,12 @@ UserOrganization.init(
 			primaryKey: true,
 		},
 		userId: {
-			type: DataTypes.UUID,
+			type: DataTypes.STRING,
 			allowNull: false,
 		},
 		organizationId: {
-			type: DataTypes.UUID,
-			allowNull: false,
+			type: DataTypes.STRING,
+			allowNull: true,
 		},
 		role: {
 			type: DataTypes.ENUM(...USER_ORG_ROLES),

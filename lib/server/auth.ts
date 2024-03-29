@@ -48,7 +48,6 @@ export async function getJwt() {
 					firstName: payload.firstName as string,
 					lastName: payload.lastName as string,
 					email: payload.email as string,
-					phone: payload.phone as string,
 					role: payload.role as string,
 					iat: payload.iat as number,
 					exp: payload.exp as number,
@@ -114,7 +113,6 @@ export async function setJWT(userData: I_UserPublic) {
 		firstName: userData.firstName,
 		lastName: userData.lastName,
 		email: userData.email,
-		phone: userData.phone,
 		role: userData.role,
 	})
 		.setProtectedHeader({ alg: 'HS256' })

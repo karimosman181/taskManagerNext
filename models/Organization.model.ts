@@ -24,8 +24,8 @@ class Organization extends Model<I_Organization, I_OrganizationCreate> implement
 
 	
 	public getUserOrganizations!: HasManyGetAssociationsMixin<UserOrganization>; // Note the null assertions!
- 	public addUserOrganization!: HasManyAddAssociationMixin<UserOrganization, number>;
-  	public hasUserOrganization!: HasManyHasAssociationMixin<UserOrganization, number>;
+ 	public addUserOrganization!: HasManyAddAssociationMixin<UserOrganization, UserOrganization['id']>;
+  	public hasUserOrganization!: HasManyHasAssociationMixin<UserOrganization, UserOrganization['id']>;
   	public countUserOrganizations!: HasManyCountAssociationsMixin;
   	public createUserOrganization!: HasManyCreateAssociationMixin<UserOrganization>;
 
@@ -109,7 +109,7 @@ Organization.init(
 
 	Organization.hasMany(UserOrganization, {
   		sourceKey: 'id',
-  		foreignKey: 'organizationIdId',
+  		foreignKey: 'organizationId',
  		as: 'UserOrganizations' // this determines the name in `associations`!
 	});
 

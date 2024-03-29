@@ -20,12 +20,6 @@ interface UserSchemaConstraints {
 		minLength: number;
 		maxLength: number;
 	};
-	phone: {
-		required: string;
-		minLength: number;
-		maxLength: number;
-		match: RegExp;
-	};
 	status: {
 		required: string;
 		isIn: string[];
@@ -52,12 +46,6 @@ export const userSchemaConstraints: UserSchemaConstraints = {
 		minLength: 1,
 		maxLength: 255,
 	},
-	phone: {
-		required: 'Phone is required',
-		minLength: 16,
-		maxLength: 16,
-		match: /^\(\d{3}\)\s\d{3}-\d{4}$/,
-	},
 	status: {
 		required: 'Status is required',
 		isIn: USER_STATUS,
@@ -82,9 +70,4 @@ export const userSchema = yup.object().shape({
 		.min(userSchemaConstraints.lastName.minLength)
 		.max(userSchemaConstraints.lastName.maxLength),
 	email: yup.string().label('Email').required(userSchemaConstraints.email.required).email(),
-	phone: yup
-		.string()
-		.label('Phone')
-		// .required(userSchemaConstraints.phone.required)
-		.matches(userSchemaConstraints.phone.match, 'Phone number is not valid'),
 });
