@@ -33,23 +33,11 @@ export async function POST(request: NextRequest) {
 	}
 
     try {
-        //check email is unique 
-        const existingUser = await User.getByLoginId(email);
+        //signup and fetch user from database
+        const newUser = await User.signup(firstName, lastName,email,password);
 
-		if (existingUser) {
-			throw new Error('Email is already exists !!');
-		}
-
-        //create user
-        const newUser = await User.create({
-		    firstName: firstName,
-		    lastName: lastName,
-		    email: email,
-		    password: password,
-            role: 'admin',
-		    status: 'active',
-	    });
-
+		// Check if user is active
+		if (newUser.status !== 'active') throw new Error('User account is not active');
 
         // create our response object
 		const res: I_ApiUserSignupResponse = {
