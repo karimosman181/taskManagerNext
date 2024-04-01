@@ -9,7 +9,7 @@ import { useApp } from '@/contexts/AppContext';
 // import { useRouter } from 'next/router';
 import { useRouter } from 'next/navigation'
 
-import { I_ApiUserSignupRequest, I_ApiUserSignupResponse} from '@/auth/signup/route';
+import { I_ApiUserSignupRequest, I_ApiUserSignupResponse} from '@/app/auth/signup/route';
 
 import {
   Card,

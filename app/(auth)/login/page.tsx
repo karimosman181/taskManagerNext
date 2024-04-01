@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useRouter } from 'next/navigation'; 
 
-import { I_ApiUserLoginRequest, I_ApiUserLoginResponse } from '@/auth/login/route';
+import { I_ApiUserLoginRequest, I_ApiUserLoginResponse } from '@/app/auth/login/route';
 import {
   IconBrandGithub,
   IconBrandGoogle,
