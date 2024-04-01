@@ -1,4 +1,4 @@
-// pnpm i cookie \ pnpm i -D @types/cookie
+// npm i cookie \ npm i -D @types/cookie
 import cookie from 'cookie';
 import { I_UserPublic } from '@/models/User.types';
 

@@ -1,9 +1,9 @@
 import { User } from '@/models/associations';
 import { NextRequest } from 'next/server';
-import { setUserDataCookie, logout } from '../../../lib/server/auth';
-import { apiErrorResponse } from '../../../lib/server/api/errorResponse';
+import { setUserDataCookie, logout } from '@/lib/server/auth';
+import { apiErrorResponse } from '@/lib/server/api/errorResponse';
 
-import { I_UserPublic } from '../../../models/User.types';
+import { I_UserPublic } from '@/models/User.types';
 
 export interface I_ApiAuthResponse extends ApiResponse {
 	user?: I_UserPublic;

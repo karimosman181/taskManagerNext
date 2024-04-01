@@ -6,18 +6,26 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useSearchParams } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
-// import { useRouter } from 'next/router';
 import { useRouter } from 'next/navigation'; 
 
-import { I_ApiUserLoginRequest, I_ApiUserLoginResponse } from '../auth/login/route';
+import { I_ApiUserLoginRequest, I_ApiUserLoginResponse } from '@/auth/login/route';
 import {
   IconBrandGithub,
   IconBrandGoogle,
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
 
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
 export default function LoginForm() {
-  const { userData, loadUserData, isLoading, setIsLoading } = useApp();
+  	const { userData, loadUserData, isLoading, setIsLoading } = useApp();
 	const router = useRouter();
 
 	// Utils
@@ -82,17 +90,15 @@ export default function LoginForm() {
 	};
 
   return (
-	<div className='w-full h-full flex flex-wrap content-center min-h-screen'>
-    <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
-      <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-        Welcome Back
-      </h2>
-      <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-        
-      </p>
+	<Card>
+		<CardHeader>
+			<CardTitle>Welcome Back</CardTitle>
+            <CardDescription></CardDescription>
+	  </CardHeader>
 
-      <div className="my-8">
-        <LabelInputContainer className="mb-4">
+      <CardContent>
+		<div className="grid w-full md:w-[22rem] items-center gap-4">
+		 <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
           <Input defaultValue="john@example.com"
 				type="text"
@@ -105,7 +111,7 @@ export default function LoginForm() {
                     }				
                 }}} />
         </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
+		<LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
           <Input 
             defaultValue="12345"
@@ -119,6 +125,7 @@ export default function LoginForm() {
 			}} />
         </LabelInputContainer>
 
+		</div>
         <button
           className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
           type="submit"
@@ -127,14 +134,16 @@ export default function LoginForm() {
           Login &rarr;
           <BottomGradient />
         </button>
-
-        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
-        <LabelInputContainer className="mb-4">
-          <Label><span className="label-text-alt text-error">{error}</span></Label>
-        </LabelInputContainer>
-      </div>
-    </div>
-	</div>
+	</CardContent>	
+	  <CardFooter>  
+          <div className='w-full'>
+            <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+            <LabelInputContainer className="mb-4">
+              <Label><span className="label-text-alt text-error">{error}</span></Label>
+            </LabelInputContainer>
+          </div>
+        </CardFooter>
+    </Card>
   );
 }
 

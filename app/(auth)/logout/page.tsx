@@ -5,6 +5,11 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Link } from 'lucide-react';
 
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/card"
+
 export default function LogoutPage() {
 	const [isLoading, setIsLoading] = useState(true);
 	const [isLoggedOut, setIsLoggedOut] = useState(false);
@@ -29,7 +34,11 @@ export default function LogoutPage() {
 	}, []);
 
 	return (
-		<div className="flex flex-col items-center gap-6 m-auto w-full max-w-md">
+		<>
+		{/* <div className="flex flex-col items-center gap-6 m-auto w-full max-w-md"> */}
+		<Card>
+
+      	<CardContent>
 			{isLoading ? (
 				<>
 					<div className="loading loading-ring w-[200px]"></div>
@@ -54,6 +63,9 @@ export default function LogoutPage() {
 					<p className="text-xl">Something went wrong! Try again.</p>
 				</>
 			)}
-		</div>
+		{/* </div> */}
+		</CardContent>
+		</Card>
+		</>
 	);
 }
