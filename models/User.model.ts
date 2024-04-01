@@ -80,6 +80,7 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 		const newOrganization = await Organization.create({
 			name: "Personal Organization",
 			description: "Personal Organization",
+			avatar: 'avatars/org/org1.svg',
 		})
 
 		const newOrganizationId = newOrganization.id;
@@ -129,6 +130,15 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 			log.error(error);
 			throw new Error('Invalid login or password');
 		}
+	}
+
+	public static async getAuthUserOrgsFromDb() {
+		const jwt = await getJwt();
+
+		if (!jwt) {
+			return null;
+		}
+
 	}
 
 	public static async getAuthUserFromDb() {
@@ -269,11 +279,5 @@ User.init(
 	},
 );
 
-
-User.hasMany(UserOrganization, {
-  	sourceKey: 'id',
-  	foreignKey: 'userId',
- 	as: 'userOrganizations' // this determines the name in `associations`!
-});
 
 export default User;

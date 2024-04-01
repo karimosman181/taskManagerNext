@@ -4,8 +4,6 @@ import { verifyJwtToken } from '@/lib/server/auth';
 // Add whatever paths you want to PROTECT here
 const authRoutes = ['/app/*', '/account/*','/api/*' ,'/admin/*'];
 
-// , '/api/*'
-
 // Function to match the * wildcard character
 function matchesWildcard(path: string, pattern: string): boolean {
 	if (pattern.endsWith('/*')) {
@@ -52,6 +50,11 @@ export async function middleware(request: NextRequest) {
 			if (!payload) {
 				return deleteCookiesAndRedirect(LOGIN);
 			}
+
+			// if(!payload.org) {
+			// 	// Redirect to app choose org
+			// 		return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/chooseorg`);
+			// }
 			// If you have an admin role and path, secure it here
 			if (request.nextUrl.pathname.startsWith('/admin')) {
 				if (payload.role !== 'admin') {
@@ -81,8 +84,23 @@ export async function middleware(request: NextRequest) {
 		}
 	}
 	if (redirectToApp) {
-		// Redirect to app dashboard
-		return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/app`);
+		
+		const token = request.cookies.get('token');
+		if (token) {
+			const payload = await verifyJwtToken(token.value);
+		
+			if(payload){
+				if(payload.org) {
+					// Redirect to app dashboard
+					return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/app`);		
+				} else { 
+					// Redirect to app choose org
+					return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/chooseorg`);			
+				}
+			} else {
+				return deleteCookiesAndRedirect(LOGIN);
+			}
+		}
 	} else {
 		// Return the original response unaltered
 		return NextResponse.next();

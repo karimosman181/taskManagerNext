@@ -107,10 +107,4 @@ Organization.init(
 );
 
 
-	Organization.hasMany(UserOrganization, {
-  		sourceKey: 'id',
-  		foreignKey: 'organizationId',
- 		as: 'UserOrganizations' // this determines the name in `associations`!
-	});
-
 export default Organization;
