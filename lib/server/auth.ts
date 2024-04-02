@@ -107,7 +107,7 @@ export function setUserDataCookie(userData: I_UserPublic) {
 	});
 }
 
-export async function setJWT(userData: I_UserPublic, selectedOrg: string | null = null) {
+export async function setJWT(userData: I_UserPublic, selectedOrg: string | null = null, selectedOrgRole: string | null = null) {
 	const token = await new SignJWT({
 		id: userData.id,
 		firstName: userData.firstName,
@@ -115,7 +115,7 @@ export async function setJWT(userData: I_UserPublic, selectedOrg: string | null 
 		email: userData.email,
 		role: userData.role,
 		org: selectedOrg,
-		orgRole: null,
+		orgRole: selectedOrgRole,
 	})
 		.setProtectedHeader({ alg: 'HS256' })
 		.setIssuedAt()

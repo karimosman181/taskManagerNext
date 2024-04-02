@@ -21,11 +21,11 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { useApp } from '@/contexts/AppContext';
 import { useRouter } from 'next/navigation'; 
 import { cn } from '@/lib/utils';
 import { I_ApiOrganizationCreateRequest, I_ApiOrganizationCreateResponse } from '@/app/api/account/organizations/route';
 import { Skeleton } from '@/components/ui/skeleton';
+import { I_ApiOrganizationSelectRequest } from '@/app/api/account/organizationselect/route';
 
 const organizationAvatars = [
     'avatars/org/org1.svg',
@@ -87,9 +87,35 @@ export default function ChooseOrgPage() {
 		setIsLoading(true);
 		setError('');
 		try {
+            if (!org_id || !role )
+				throw new Error('error happened !');
 
-            console.log(org_id);
-             console.log(role);
+			const payload: I_ApiOrganizationSelectRequest = {
+                selectedOrg: org_id,
+                selectedOrgRole: role,
+			};
+            
+            const response = await fetch('/api/account/organizationselect', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(payload),
+			});
+
+			const data: I_ApiOrganizationCreateResponse = await response.json();
+
+
+            if (data.success) {
+                setOrganizationsCreate(false);
+                // Redirect to app dashboard	
+                router.push('/app')
+				
+				return;
+			}
+
+			throw new Error(data.message);
+
         } catch (error) {
 			let mess = 'Something went wrong.';
 			if (error instanceof Error) {

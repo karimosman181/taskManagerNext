@@ -51,10 +51,11 @@ export async function middleware(request: NextRequest) {
 				return deleteCookiesAndRedirect(LOGIN);
 			}
 
-			// if(!payload.org) {
-			// 	// Redirect to app choose org
-			// 		return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/chooseorg`);
-			// }
+			if(!request.nextUrl.pathname.startsWith('/api') && !request.nextUrl.pathname.startsWith('/chooseorg') && !payload.org) {
+				// Redirect to app choose org
+				return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/chooseorg`);
+			}
+
 			// If you have an admin role and path, secure it here
 			if (request.nextUrl.pathname.startsWith('/admin')) {
 				if (payload.role !== 'admin') {
