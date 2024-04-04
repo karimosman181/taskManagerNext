@@ -76,7 +76,7 @@ export default function SignupForm() {
 				  if (redirect) {
 					  router.push(redirect);
 				  } else {
-					  router.push('/app');
+					  router.push('/dashbourd');
 				  }
 				  return;
 			  }

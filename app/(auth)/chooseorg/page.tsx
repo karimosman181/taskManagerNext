@@ -109,7 +109,7 @@ export default function ChooseOrgPage() {
             if (data.success) {
                 setOrganizationsCreate(false);
                 // Redirect to app dashboard	
-                router.push('/app')
+                router.push('/dashbourd')
 				
 				return;
 			}

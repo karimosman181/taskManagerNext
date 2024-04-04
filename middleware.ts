@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyJwtToken } from '@/lib/server/auth';
 
 // Add whatever paths you want to PROTECT here
-const authRoutes = ['/app/*', '/account/*','/api/*' ,'/admin/*'];
+const authRoutes = ['/dashbourd/*', '/account/*','/api/*' ,'/admin/*'];
 
 // Function to match the * wildcard character
 function matchesWildcard(path: string, pattern: string): boolean {
@@ -93,7 +93,7 @@ export async function middleware(request: NextRequest) {
 			if(payload){
 				if(payload.org) {
 					// Redirect to app dashboard
-					return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/app`);		
+					return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/dashbourd`);		
 				} else { 
 					// Redirect to app choose org
 					return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/chooseorg`);			
