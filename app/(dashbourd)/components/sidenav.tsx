@@ -8,15 +8,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Orgdropdown } from "./ui/orgdropdown";
 
 interface DashboardNavProps {
   items: SidebarNavItem[]
@@ -35,16 +27,7 @@ export function SideNav({ items }: DashboardNavProps) {
         <Logo />
     </div>
     <div className="w-full">
-        <Select>
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Theme" />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="system">System</SelectItem>
-            </SelectContent>
-        </Select>
+        <Orgdropdown />
     </div>
     <div className="">
     <h3 className="text-gray-500 leading-8 font-semibold">Main Menu</h3>

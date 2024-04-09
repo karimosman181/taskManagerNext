@@ -1,7 +1,7 @@
 import { UserOrganization, User, Organization } from '@/models/associations';
 import { cookies } from 'next/headers';
 import { I_OrganizationCreate } from '@/models/Organization.types';
-import { setJWT } from './auth';
+import { setJWT, setUserSelectedOrgCookie } from './auth';
 
 
 export function getUserOrganizationList() {
@@ -63,6 +63,8 @@ export async function SelectUserOrganization(selectedOrg: string, selectedOrgRol
 		const user = JSON.parse(cookieData.value);
 
 		await setJWT(user, selectedOrg, selectedOrgRole)
+
+		setUserSelectedOrgCookie(selectedOrg, selectedOrgRole)
 
 		return true;
 	} catch (_){

@@ -107,6 +107,18 @@ export function setUserDataCookie(userData: I_UserPublic) {
 	});
 }
 
+export function setUserSelectedOrgCookie(selectedOrg: string, selectedOrgRole: string) {
+	const cookieStore = cookies();
+
+	cookieStore.set({
+		name: 'selectedOrg',
+		value: JSON.stringify({selectedOrg: selectedOrg, selectedOrgRole: selectedOrgRole }),
+		path: '/',
+		maxAge: authConfig.jwtExpires,
+		sameSite: 'lax',
+	});
+}
+
 export async function setJWT(userData: I_UserPublic, selectedOrg: string | null = null, selectedOrgRole: string | null = null) {
 	const token = await new SignJWT({
 		id: userData.id,
