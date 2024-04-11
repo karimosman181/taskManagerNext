@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { Icons } from "@/components/icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Orgdropdown } from "./ui/orgdropdown";
+import { Profiledropdown } from "./ui/profiledropdown";
 
 interface DashboardNavProps {
   items: SidebarNavItem[]
@@ -72,15 +73,7 @@ export function SideNav({ items }: DashboardNavProps) {
                 </div>
         </div>
     </div>
-    <div className="flex flex-wrap flex-row items-center gap-3">
-        <div>
-            <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-        </div>
-        <div> User Name </div>
-        </div>
+    <Profiledropdown />
     </div>
     </>
 }
