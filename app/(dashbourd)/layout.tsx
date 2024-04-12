@@ -1,5 +1,6 @@
 import { dashboardConfig } from "@/config/dashboard";
 import { SideNav } from "./components/sidenav";
+import { TopBar } from "./components/topbar";
 
 
 const DashbourdPageLayout = ( {
@@ -16,7 +17,7 @@ const DashbourdPageLayout = ( {
           <SideNav items={dashboardConfig.sidebarNav} />
         </aside>
         <main className="flex w-full flex-1 flex-col overflow-hidden bg-white rounded-xl">
-          
+          <TopBar />
           {children}
         </main>
       </div>
