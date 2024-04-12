@@ -6,11 +6,14 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import Image from 'next/image';
 import { I_ApiOrganizationSelectRequest } from '@/app/api/account/organizationselect/route';
 import { getUserSelectedOrgData } from '@/lib/client/auth';
 import { Skeleton } from '@/components/ui/skeleton';
+import { I_ApiOrganizationCreateResponse } from '@/app/api/account/organizations/route';
+import { useRouter } from 'next/navigation'; 
+
 
 async function getOrganizationsList() {
     const response = await fetch('/api/account/organizations', {
@@ -27,9 +30,12 @@ async function getOrganizationsList() {
 
 export function Orgdropdown() {
 
+    const router = useRouter();
+
     // State
     const [error, setError] = useState('');
     const [ userSelectedOrg, setUserSelectedOrg ] = useState({ selectedOrg: '', selectedOrgRole: '' });
+    const [ userSelectedOrgLoaded, setUserSelectedOrgLoaded ] = useState(false);
     const [ userSelectedOrgIndex, setUserSelectedOrgIndex ] = useState(0);
     const [ organizationsList, setOrganizationsList ] = useState([]);
     const [ isLoading, setIsLoading  ] = useState(false);
@@ -53,9 +59,10 @@ export function Orgdropdown() {
 
     
      useEffect(() => {
+        if(!userSelectedOrgLoaded){
         const selectOrg = getUserSelectedOrgData();
         if(selectOrg) setUserSelectedOrg(selectOrg);
-
+        setUserSelectedOrgLoaded(true);
         setIsLoading(true);
 
         organizationsList.forEach((organization: any, index) => {
@@ -67,12 +74,64 @@ export function Orgdropdown() {
                 }, 100);
             }
         })
-     },[organizationsList]);
+    }
+     },[organizationsList, userSelectedOrgLoaded]);
+
+
+     const handleSelectOrganization = async (index: number) => {
+        if (isLoading) return;
+
+        const org: any = organizationsList.at(index);
+
+        const org_id = org.Organization.id;
+        const role = org.role;
+
+
+		setIsLoading(true);
+		setError('');
+		try {
+            if (!org_id || !role )
+				throw new Error('error happened !');
+
+			const payload: I_ApiOrganizationSelectRequest = {
+                selectedOrg: org_id,
+                selectedOrgRole: role,
+			};
+            
+            const response = await fetch('/api/account/organizationselect', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(payload),
+			});
+
+			const data: I_ApiOrganizationCreateResponse = await response.json();
+
+
+            if (data.success) {
+                console.log('sucess');
+                setUserSelectedOrgLoaded(false);
+			}
+
+			throw new Error(data.message);
+
+        } catch (error) {
+			let mess = 'Something went wrong.';
+			if (error instanceof Error) {
+				mess = error.message;
+			}
+			setError(mess);
+		} finally {
+			setIsLoading(false);
+            router.refresh();
+		}
+    }
     
      return (
     <>
     {!isLoading ? 
-        <Select defaultValue={userSelectedOrgIndex + ''}>
+        <Select defaultValue={userSelectedOrgIndex + ''} onValueChange={ e => {handleSelectOrganization(+e)}}>
             <SelectTrigger  className="w-[180px] h-[60px]" >
                 <SelectValue />
             </SelectTrigger>

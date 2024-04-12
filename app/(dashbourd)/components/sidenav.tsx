@@ -23,7 +23,7 @@ export function SideNav({ items }: DashboardNavProps) {
     }
 
     return <>
-    <div className="w-full flex flex-wrap justify-center gap-5 flex-col">
+    <div className="w-full flex flex-wrap h-full justify-center gap-5 flex-col">
     <div className="">
         <Logo />
     </div>
@@ -54,16 +54,8 @@ export function SideNav({ items }: DashboardNavProps) {
       })}
     </nav>
     </div>
-    <div className="">
-        <h3 className="text-gray-500 leading-8 font-semibold">WorkSpaces</h3>
-        <ul className="list-disc list-inside mt-2">
-            <li className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">Landing Page Company</li>
-            <li className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">page</li>
-            <li className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">page 2</li>
-            <li className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">page 3</li>
-        </ul>
-    </div>
-    <div className="cursor-pointer">
+    
+    <div className="cursor-pointer mt-auto">
         <div className="bg-gray-200 rounded-xl flex flex-col flex-wrap justify-center items-center pt-4 pb-4 pl-2 pr-2">
                 <div className="bg-gray-300 rounded-full w-[35px] text-3xl text-center">
                     +

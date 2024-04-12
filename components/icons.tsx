@@ -24,6 +24,8 @@ import {
   User,
   Home,
   X,
+  PanelsLeftBottom,
+  UsersRound,
   type Icon as LucideIcon,
 } from "lucide-react"
 
@@ -41,6 +43,8 @@ export const Icons = {
   media: Image,
   settings: Settings,
   billing: CreditCard,
+  tasks: PanelsLeftBottom,
+  groups: UsersRound,
   ellipsis: MoreVertical,
   add: Plus,
   warning: AlertTriangle,

@@ -10,12 +10,12 @@ export const dashboardConfig: DashboardConfig = {
     {
       title: "My tasks",
       href: "/dashboard/tasks",
-      icon: "billing",
+      icon: "tasks",
     },
      {
       title: "Members",
       href: "/dashboard/members",
-      icon: "billing",
+      icon: "groups",
     },
     {
       title: "Settings",
