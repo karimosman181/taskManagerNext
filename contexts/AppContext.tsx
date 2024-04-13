@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, FunctionComponent } from 'react';
-import { getUserData, isLoggedIn } from '../lib/client/auth';
+import { getUserData, getUserSelectedOrgData, isLoggedIn } from '../lib/client/auth';
 import { usePathname } from 'next/navigation';
 import { I_UserPublic } from '@/models/User.types';
 import { I_ApiAuthResponse } from '@/app/api/auth/route';
@@ -11,6 +11,9 @@ interface AppContextProps {
 	userData: I_UserPublic | null;
 	userDataLoaded: boolean;
 	loadUserData: () => void;
+	userSelectedOrg: { selectedOrg: string, selectedOrgRole: string } | null;
+	userSelectedOrgLoaded: boolean;
+	loadUserSelectedOrgData: () => void;
 }
 
 export interface I_ModalProps {
@@ -33,6 +36,8 @@ export const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) =
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [userData, setUserData] = useState<I_UserPublic | null>(null);
 	const [userDataLoaded, setUserDataLoaded] = useState<boolean>(false);
+	const [ userSelectedOrg, setUserSelectedOrg ] = useState<{ selectedOrg: string, selectedOrgRole: string } | null>(null);
+    const [ userSelectedOrgLoaded, setUserSelectedOrgLoaded ] = useState<boolean>(false);
 	const [userDataLastLoad, setUserDataLastLoad] = useState<Date>(new Date());
 	const fetcher = async (url: string) => {
 		const response = await fetch(url);
@@ -69,10 +74,20 @@ export const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) =
 			loadUserData();
 		}
 	};
+
+	const loadUserSelectedOrgData = () => {
+		setUserSelectedOrgLoaded(false);
+		const selectOrg = getUserSelectedOrgData();
+        setUserSelectedOrg(selectOrg);
+		setUserSelectedOrgLoaded(true);
+	}
+
 	// Fires on first load
 	useEffect(() => {
 		loadUserDataFromServer();
+		loadUserSelectedOrgData();
 	}, []);
+
 	// Fires on page load
 	useEffect(() => {
 		const userData = getUserData();
@@ -87,6 +102,13 @@ export const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) =
 			}
 		}
 	}, [pathname]);
+
+	//fires on selected user org changed
+	useEffect(() => {
+		loadUserSelectedOrgData();
+	},[userSelectedOrgLoaded]);
+
+
 	return (
 		<AppContext.Provider
 			value={{
@@ -96,6 +118,9 @@ export const AppProvider: FunctionComponent<AppProviderProps> = ({ children }) =
 				userData,
 				userDataLoaded,
 				loadUserData,
+				userSelectedOrg,
+				userSelectedOrgLoaded,
+				loadUserSelectedOrgData,
 			}}
 		>
 			{children}

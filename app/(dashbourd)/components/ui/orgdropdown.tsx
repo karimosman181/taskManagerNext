@@ -13,6 +13,7 @@ import { getUserSelectedOrgData } from '@/lib/client/auth';
 import { Skeleton } from '@/components/ui/skeleton';
 import { I_ApiOrganizationCreateResponse } from '@/app/api/account/organizations/route';
 import { useRouter } from 'next/navigation'; 
+import { useApp } from '@/contexts/AppContext';
 
 
 async function getOrganizationsList() {
@@ -32,13 +33,17 @@ export function Orgdropdown() {
 
     const router = useRouter();
 
+    
+    
+  	const { userSelectedOrg, userSelectedOrgLoaded,loadUserSelectedOrgData, isLoading, setIsLoading } = useApp();
+
     // State
     const [error, setError] = useState('');
-    const [ userSelectedOrg, setUserSelectedOrg ] = useState({ selectedOrg: '', selectedOrgRole: '' });
-    const [ userSelectedOrgLoaded, setUserSelectedOrgLoaded ] = useState(false);
+    // const [ userSelectedOrg, setUserSelectedOrg ] = useState({ selectedOrg: '', selectedOrgRole: '' });
+    // const [ userSelectedOrgLoaded, setUserSelectedOrgLoaded ] = useState(false);
     const [ userSelectedOrgIndex, setUserSelectedOrgIndex ] = useState(0);
     const [ organizationsList, setOrganizationsList ] = useState([]);
-    const [ isLoading, setIsLoading  ] = useState(false);
+    // const [ isLoading, setIsLoading  ] = useState(false);
     
      useEffect(() => {
         setIsLoading(true);
@@ -59,10 +64,6 @@ export function Orgdropdown() {
 
     
      useEffect(() => {
-        if(!userSelectedOrgLoaded){
-        const selectOrg = getUserSelectedOrgData();
-        if(selectOrg) setUserSelectedOrg(selectOrg);
-        setUserSelectedOrgLoaded(true);
         setIsLoading(true);
 
         organizationsList.forEach((organization: any, index) => {
@@ -74,8 +75,7 @@ export function Orgdropdown() {
                 }, 100);
             }
         })
-    }
-     },[organizationsList, userSelectedOrgLoaded]);
+     },[organizationsList,userSelectedOrg]);
 
 
      const handleSelectOrganization = async (index: number) => {
@@ -110,8 +110,7 @@ export function Orgdropdown() {
 
 
             if (data.success) {
-                console.log('sucess');
-                setUserSelectedOrgLoaded(false);
+                loadUserSelectedOrgData();
 			}
 
 			throw new Error(data.message);
@@ -124,7 +123,6 @@ export function Orgdropdown() {
 			setError(mess);
 		} finally {
 			setIsLoading(false);
-            router.refresh();
 		}
     }
     
