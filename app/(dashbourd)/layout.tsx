@@ -12,7 +12,7 @@ const DashbourdPageLayout = ( {
     <div className="flex min-h-screen flex-col space-y-6 bg-gray-100 pb-8">
       <header className="sticky top-0 z-40 border-b bg-background">
       </header>
-      <div className=" mx-4 grid flex-1 gap-12 md:grid-cols-[250px_1fr]">
+      <div className=" mx-4 grid flex-1 gap-4 md:grid-cols-[250px_1fr]">
         <aside className="hidden w-[250px] h-full flex-col md:flex bg-white rounded-xl p-10">
           <SideNav items={dashboardConfig.sidebarNav} />
         </aside>
