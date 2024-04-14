@@ -1,5 +1,3 @@
-import { TasksBoard } from "../components/board";
-
 export default function Dashboard() {
   return (
     <>
@@ -35,8 +33,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
-      <TasksBoard />
     </>
   );
 }
