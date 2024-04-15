@@ -5,6 +5,7 @@ export interface I_List {
   description: string;
   content: Text;
   order: number;
+  color: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
@@ -20,4 +21,5 @@ export interface I_ListCreate
     | "createdAt"
     | "updatedAt"
     | "deletedAt"
+    | "color"
   > {}

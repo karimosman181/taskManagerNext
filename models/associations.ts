@@ -27,4 +27,4 @@ Organization.hasMany(List, {
 
 List.belongsTo(Organization);
 
-export { User, Organization, UserOrganization };
+export { User, Organization, UserOrganization, List };
