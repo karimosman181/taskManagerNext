@@ -49,11 +49,6 @@ class Organization
 
   public readonly userOrganizations?: UserOrganization[];
 
-  public static associations: {
-    UserOrganizations: Association<Organization, UserOrganization>;
-    List: Association<Organization, List>;
-  };
-
   public getLists!: HasManyGetAssociationsMixin<List>; // Note the null assertions!
   public addList!: HasManyAddAssociationMixin<List, List["id"]>;
   public hasList!: HasManyHasAssociationMixin<List, List["id"]>;
@@ -61,6 +56,11 @@ class Organization
   public createList!: HasManyCreateAssociationMixin<List>;
 
   public readonly lists?: List[];
+
+  public static associations: {
+    UserOrganizations: Association<Organization, UserOrganization>;
+    List: Association<Organization, List>;
+  };
 }
 
 Organization.init(

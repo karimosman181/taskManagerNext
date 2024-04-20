@@ -18,6 +18,7 @@ export interface I_ListCreate
     | "organizationId"
     | "description"
     | "content"
+    | "order"
     | "createdAt"
     | "updatedAt"
     | "deletedAt"

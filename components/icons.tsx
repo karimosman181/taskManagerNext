@@ -26,10 +26,12 @@ import {
   X,
   PanelsLeftBottom,
   UsersRound,
+  Ellipsis,
   type Icon as LucideIcon,
-} from "lucide-react"
+  EllipsisVertical,
+} from "lucide-react";
 
-export type Icon = LucideIcon
+export type Icon = LucideIcon;
 
 export const Icons = {
   logo: Command,
@@ -45,7 +47,7 @@ export const Icons = {
   billing: CreditCard,
   tasks: PanelsLeftBottom,
   groups: UsersRound,
-  ellipsis: MoreVertical,
+  EllipsisVertical: MoreVertical,
   add: Plus,
   warning: AlertTriangle,
   user: User,
@@ -56,6 +58,7 @@ export const Icons = {
   moon: Moon,
   laptop: Laptop,
   home: Home,
+  ellipsisHorizontal: Ellipsis,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
@@ -75,4 +78,4 @@ export const Icons = {
   ),
   twitter: Twitter,
   check: Check,
-}
+};

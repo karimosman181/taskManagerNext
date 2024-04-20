@@ -42,17 +42,31 @@ export async function createList(data: I_ListCreate) {
       throw new Error("Organization not found");
     }
 
+    const lastListOrder = await List.findOne({
+      order: [["order", "DESC"]],
+      where: {
+        organizationId: organization.id,
+      },
+      attributes: ["order"],
+    });
+
+    let order = 1;
+
+    if (lastListOrder) {
+      order = lastListOrder.order + 1;
+    }
+
     const newList = await List.create({
       title: data.title,
       description: data.description,
-      order: data.order,
+      order: order,
       color: data.color,
+      organizationId: organization.id,
     });
-
-    await organization.addList(newList);
 
     return newList;
   } catch (_) {
+    console.log(_);
     return null;
   }
 }
