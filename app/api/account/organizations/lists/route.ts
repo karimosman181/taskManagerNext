@@ -5,7 +5,6 @@ import { createList, getLists } from "@/lib/server/list";
 export interface I_ApiListCreateRequest {
   title: string;
   description: string;
-  order: number;
   color: string;
 }
 
@@ -29,10 +28,10 @@ export async function POST(request: NextRequest) {
   const body = (await request.json()) as I_ApiListCreateRequest;
 
   // trim all input values
-  const { title, description, order, color } = Object.fromEntries(
+  const { title, description, color } = Object.fromEntries(
     Object.entries(body).map(([key, value]) => [key, value?.trim()])
   ) as I_ApiListCreateRequest;
-  if (!title || !description || !order || !color) {
+  if (!title || !description || !color) {
     const res: I_ApiListCreateResponse = {
       success: false,
       message: "A required field is missing",
@@ -44,7 +43,6 @@ export async function POST(request: NextRequest) {
     const list = await createList({
       title,
       description,
-      order,
       color,
     });
 
