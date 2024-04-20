@@ -1,13 +1,11 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { ListWrapper } from "./listwrapper";
 import { ElementRef, useRef, useState } from "react";
-import { useEventListener, useOnClickOutside } from "usehooks-ts";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-
+import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -15,6 +13,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  I_ApiListCreateRequest,
+  I_ApiListCreateResponse,
+} from "@/app/api/account/organizations/lists/route";
 
 const colors = [
   "bg-lime-700",
@@ -28,126 +40,157 @@ const colors = [
 ];
 
 export const ListForm = () => {
+  const router = useRouter();
+
   const formRef = useRef<ElementRef<"form">>(null);
   const titleRef = useRef<ElementRef<"input">>(null);
   const descriptionRef = useRef<ElementRef<"input">>(null);
-
-  const [isEditing, setIsEditing] = useState(false);
   const [color, setColor] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const enableEditing = () => {
-    setIsEditing(true);
-  };
+  const [open, setOpen] = useState(false);
 
-  const disableEditing = () => {
-    setIsEditing(false);
-  };
+  const handleCreateList = async () => {
+    if (isLoading) return;
 
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      disableEditing();
+    setIsLoading(true);
+    setError("");
+    try {
+      if (!color || !titleRef.current?.value || !descriptionRef.current?.value)
+        throw new Error("Please enter all required fields.");
+
+      const payload: I_ApiListCreateRequest = {
+        title: titleRef.current?.value,
+        description: descriptionRef.current?.value,
+        color: color,
+      };
+
+      const response = await fetch("/api/account/organizations/lists", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data: I_ApiListCreateResponse = await response.json();
+
+      if (data.success) {
+        setOpen(false);
+        router.refresh();
+        return;
+      }
+
+      throw new Error(data.message);
+    } catch (error) {
+      let mess = "Something went wrong.";
+      if (error instanceof Error) {
+        mess = error.message;
+      }
+      setError(mess);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  useEventListener("keydown", onKeyDown);
-  // useOnClickOutside(formRef, disableEditing);
-
-  if (isEditing) {
-    return (
-      <ListWrapper>
-        <form
-          ref={formRef}
-          className="w-full p-3 rounded-md bg-white space-y-4 shadow-md"
-        >
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="title">Title</Label>
-            <Input
-              id="title"
-              type="text"
-              ref={titleRef}
-              className="input input-bordered"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  if (descriptionRef.current) {
-                    descriptionRef.current.focus();
-                  }
-                }
-              }}
-            />
-          </LabelInputContainer>
-          <LabelInputContainer className="mb-4">
-            <Label htmlFor="description">Description</Label>
-            <Input
-              id="description"
-              type="text"
-              ref={descriptionRef}
-              className="input input-bordered"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                }
-              }}
-            />
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="email">Color</Label>
-              <Select
-                onValueChange={(e: any) => {
-                  setColor(e);
-                }}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Color" />
-                </SelectTrigger>
-                <SelectContent>
-                  {colors.map((color: string, index) => (
-                    <SelectItem key={index} value={color}>
-                      <div
-                        className={
-                          "w-[200px] rounded-md mx-0 px-0 items-start pb-4 cursor-pointer " +
-                          color
-                        }
-                      >
-                        <div className="w-full">&nbsp;</div>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </LabelInputContainer>
-          </LabelInputContainer>
-
-          <button
-            className="bg-gradient-to-br relative group/btn from-white dark:from-zinc-900 dark:to-zinc-900 to-stone-600 block dark:bg-zinc-800 w-full text-dark rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-            type="submit"
-            // onClick={handleCreateOrganization}
-          >
-            Cancel
-            <BottomGradient />
-          </button>
-
-          <button
-            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-            type="submit"
-            // onClick={handleCreateOrganization}
-          >
-            Submit
-            <BottomGradient />
-          </button>
-        </form>
-      </ListWrapper>
-    );
-  }
-
   return (
-    <ListWrapper>
-      <button
-        onClick={enableEditing}
-        className="w-full bg-white/80 hover:bg-white/50 hover:shadow-md transition p-3 flex items-center font-medium text-sm"
-      >
-        <Plus className="h-4 w-4 mr-2" />
-        Add a list
-      </button>
-      {/* <form className="w-full p-3 rounded-md bg-white space-y-4 shadow-md"></form> */}
-    </ListWrapper>
+    <>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger asChild>
+          <button
+            // onClick={enableEditing}
+            className="shrink-0 h-[50px] w-[160px] fixed bottom-4 right-4 select-none bg-blue-600/80  text-white rounded-3xl hover:shadow-md transition p-3 flex items-center font-medium text-sm"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add new list
+          </button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Create List</DialogTitle>
+            <DialogDescription>
+              Create a new list here. Click save when you're done.
+            </DialogDescription>
+          </DialogHeader>
+          <form ref={formRef} className="w-full p-3 space-y-4 ">
+            <LabelInputContainer className="mb-4">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                type="text"
+                ref={titleRef}
+                className="input input-bordered"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    if (descriptionRef.current) {
+                      descriptionRef.current.focus();
+                    }
+                  }
+                }}
+              />
+            </LabelInputContainer>
+            <LabelInputContainer className="mb-4">
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
+                type="text"
+                ref={descriptionRef}
+                className="input input-bordered"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                  }
+                }}
+              />
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="email">Color</Label>
+                <Select
+                  onValueChange={(e: any) => {
+                    setColor(e);
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select Color" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {colors.map((color: string, index) => (
+                      <SelectItem key={index} value={color}>
+                        <div
+                          className={
+                            "w-[200px] rounded-md mx-0 px-0 items-start pb-4 cursor-pointer " +
+                            color
+                          }
+                        >
+                          <div className="w-full">&nbsp;</div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </LabelInputContainer>
+            </LabelInputContainer>
+          </form>
+          <DialogFooter>
+            <div className="flex flex-col w-full">
+              <button
+                className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                type="submit"
+                onClick={handleCreateList}
+              >
+                Save
+                <BottomGradient />
+              </button>
+              <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+              <LabelInputContainer className="mb-4">
+                <Label>
+                  <span className="label-text-alt text-error">{error}</span>
+                </Label>
+              </LabelInputContainer>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
