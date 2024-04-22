@@ -1,6 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 import { apiErrorResponse } from "@/lib/server/api/errorResponse";
 import { createList, getLists } from "@/lib/server/list";
+import { I_ListPublic } from "@/models/List.types";
 
 export interface I_ApiListCreateRequest {
   title: string;
@@ -10,11 +11,20 @@ export interface I_ApiListCreateRequest {
 
 export interface I_ApiListCreateResponse extends ApiResponse {}
 
+export interface I_ApiListsResponse extends ApiResponse {
+  lists: I_ListPublic[] | null;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const data = await getLists();
 
-    return new Response(JSON.stringify(data), {
+    const response: I_ApiListsResponse = {
+      success: true,
+      lists: data,
+    };
+
+    return new Response(JSON.stringify(response), {
       headers: {
         "Content-Type": "application/json",
       },

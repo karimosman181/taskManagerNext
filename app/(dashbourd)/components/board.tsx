@@ -27,7 +27,7 @@ export default function Board() {
     getList()
       .then((data) => {
         if (data) {
-          setLists(data);
+          setLists(data.lists);
         }
       })
       .catch(() => {
