@@ -24,3 +24,5 @@ export interface I_ListCreate
     | "deletedAt"
     | "color"
   > {}
+
+export interface I_ListPublic extends I_List {}

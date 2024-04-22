@@ -2,6 +2,11 @@
 
 import List from "@/models/List.model";
 import { Icons } from "@/components/icons";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface ListHeaderProps {
   data: List;
@@ -14,7 +19,17 @@ export const ListHeader = ({ data }: ListHeaderProps) => {
       <div className="w-full flex flex-row my-2">
         <div className="grow">{data.title}</div>{" "}
         <div>
-          <Icon />
+          <Popover>
+            <PopoverTrigger>
+              <Icon />
+            </PopoverTrigger>
+            <PopoverContent className="w-26">
+              <ul>
+                <li>add card</li>
+                <li>delete</li>
+              </ul>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
       <div className={"w-full  h-1 rounded-full " + data.color}>&nbsp;</div>

@@ -77,9 +77,9 @@ export const ListForm = () => {
       const data: I_ApiListCreateResponse = await response.json();
 
       if (data.success) {
-        setOpen(false);
-        router.refresh();
-        return;
+        // setOpen(false);
+        // router.refresh();
+        // return;
       }
 
       throw new Error(data.message);
@@ -90,7 +90,11 @@ export const ListForm = () => {
       }
       setError(mess);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+        setOpen(false);
+        router.refresh();
+      }, 10000);
     }
   };
 
