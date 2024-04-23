@@ -8,7 +8,7 @@ export interface I_List {
   color: string;
   createdAt: Date;
   updatedAt: Date;
-  deletedAt: Date;
+  deletedAt: Date | null;
 }
 
 export interface I_ListCreate

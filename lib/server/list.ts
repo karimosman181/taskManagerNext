@@ -19,6 +19,7 @@ export function getLists() {
     return List.findAll({
       where: {
         organizationId: selectedOrg.selectedOrg,
+        deletedAt: null,
       },
       order: [["order", "ASC"]],
     });
@@ -46,6 +47,7 @@ export async function createList(data: I_ListCreate) {
       order: [["order", "DESC"]],
       where: {
         organizationId: organization.id,
+        deletedAt: null,
       },
       attributes: ["order"],
     });
@@ -65,6 +67,19 @@ export async function createList(data: I_ListCreate) {
     });
 
     return newList;
+  } catch (_) {
+    console.log(_);
+    return null;
+  }
+}
+
+export async function deleteListById(id: string) {
+  try {
+    const res = await List.update(
+      { deletedAt: new Date() },
+      { where: { id: id } }
+    );
+    return res;
   } catch (_) {
     console.log(_);
     return null;

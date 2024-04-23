@@ -36,18 +36,19 @@ export function TopBar() {
   useEffect(() => {
     setIsLoading(true);
 
-    getOrganization(userSelectedOrg?.selectedOrg!)
-      .then((data) => {
-        if (data) {
-          setOrgData(data);
-        }
-      })
-      .catch(() => {
-        console.error("Something went wrong!");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    if (userSelectedOrg?.selectedOrg)
+      getOrganization(userSelectedOrg?.selectedOrg)
+        .then((data) => {
+          if (data) {
+            setOrgData(data);
+          }
+        })
+        .catch(() => {
+          console.error("Something went wrong!");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
   }, [userSelectedOrg]);
 
   return (

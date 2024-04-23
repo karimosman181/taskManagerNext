@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ListContainer } from "./list/listcontainer";
 import { useBoard } from "@/contexts/BoardContext";
+import { useApp } from "@/contexts/AppContext";
 
 async function getList() {
   const response = await fetch("/api/account/organizations/lists", {
@@ -17,12 +18,17 @@ async function getList() {
 }
 
 export default function Board() {
-  const { isLoading, listsData, listsDataLoaded } = useBoard();
+  const { isLoading, listsData, listsDataLoaded, setReLoad, reLoad } =
+    useBoard();
+  const { userSelectedOrgLoaded } = useApp();
+
   // State
   // const [error, setError] = useState("");
   // const [lists, setLists] = useState([]);
   // const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setReLoad(!reLoad);
+  }, [userSelectedOrgLoaded]);
   // useEffect(() => {
   //   setIsLoading(true);
 

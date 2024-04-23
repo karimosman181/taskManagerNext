@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { apiErrorResponse } from "@/lib/server/api/errorResponse";
-import { createList, getLists } from "@/lib/server/list";
+import { createList, deleteListById, getLists } from "@/lib/server/list";
 import { I_ListPublic } from "@/models/List.types";
 
 export interface I_ApiListCreateRequest {
@@ -10,6 +10,7 @@ export interface I_ApiListCreateRequest {
 }
 
 export interface I_ApiListCreateResponse extends ApiResponse {}
+export interface I_ApiListDeleteResponse extends ApiResponse {}
 
 export interface I_ApiListsResponse extends ApiResponse {
   lists: I_ListPublic[] | null;
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const list = await createList({
+    const list: any = await createList({
       title,
       description,
       color,
@@ -68,6 +69,38 @@ export async function POST(request: NextRequest) {
         message: "OOPs! something went wrong !",
       };
       return NextResponse.json(res, { status: 500 });
+    }
+  } catch (err: any) {
+    return apiErrorResponse(err);
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const id = request.nextUrl.searchParams.get("id");
+
+  try {
+    if (id) {
+      const res = await deleteListById(id);
+
+      if (res) {
+        const res: I_ApiListCreateResponse = {
+          success: true,
+          message: "list Created",
+        };
+        return NextResponse.json(res, { status: 200 });
+      } else {
+        const res: I_ApiListCreateResponse = {
+          success: false,
+          message: "OOPs! something went wrong !",
+        };
+        return NextResponse.json(res, { status: 500 });
+      }
+    } else {
+      const res: I_ApiListCreateResponse = {
+        success: false,
+        message: "Id is missing",
+      };
+      return NextResponse.json(res, { status: 400 });
     }
   } catch (err: any) {
     return apiErrorResponse(err);
