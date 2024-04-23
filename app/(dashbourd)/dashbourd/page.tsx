@@ -1,4 +1,5 @@
-import Board from "../components/board";
+import Board from "../components/board/board";
+import BoardContainer from "../components/board/boardcontainer";
 
 export default function Dashboard() {
   return (
@@ -35,7 +36,8 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-      <Board />
+      {/* <Board /> */}
+      <BoardContainer></BoardContainer>
     </>
   );
 }
