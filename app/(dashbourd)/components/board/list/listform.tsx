@@ -27,6 +27,7 @@ import {
   I_ApiListCreateRequest,
   I_ApiListCreateResponse,
 } from "@/app/api/account/organizations/lists/route";
+import { useBoard } from "@/contexts/BoardContext";
 
 const colors = [
   "bg-lime-700",
@@ -41,6 +42,8 @@ const colors = [
 
 export const ListForm = () => {
   const router = useRouter();
+
+  const { reLoad, setReLoad } = useBoard();
 
   const formRef = useRef<ElementRef<"form">>(null);
   const titleRef = useRef<ElementRef<"input">>(null);
@@ -93,8 +96,9 @@ export const ListForm = () => {
       setTimeout(() => {
         setIsLoading(false);
         setOpen(false);
-        router.refresh();
-      }, 10000);
+        // router.refresh();
+        setReLoad(!reLoad);
+      }, 1000);
     }
   };
 

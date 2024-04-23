@@ -7,9 +7,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { I_ListPublic } from "@/models/List.types";
 
 interface ListHeaderProps {
-  data: List;
+  data: I_ListPublic;
 }
 
 export const ListHeader = ({ data }: ListHeaderProps) => {

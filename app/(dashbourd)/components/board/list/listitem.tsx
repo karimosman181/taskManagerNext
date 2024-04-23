@@ -2,9 +2,10 @@
 
 import List from "@/models/List.model";
 import { ListHeader } from "./listheader";
+import { I_ListPublic } from "@/models/List.types";
 
 interface ListItemProps {
-  data: List;
+  data: I_ListPublic;
   index: number;
 }
 

@@ -22,6 +22,8 @@ interface BoardContextProps {
   listsData: I_ListPublic[] | null;
   listsDataLoaded: boolean;
   loadListsData: () => void;
+  reLoad: boolean;
+  setReLoad: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface I_ModalProps {
@@ -89,6 +91,8 @@ export const BoardProvider: FunctionComponent<BoardProviderProps> = ({
         listsData,
         listsDataLoaded,
         loadListsData,
+        reLoad,
+        setReLoad,
       }}
     >
       {children}
