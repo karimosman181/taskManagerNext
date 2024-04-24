@@ -48,7 +48,7 @@ export default function Board() {
 
   return (
     <>
-      <div className="p-4 h-full overflow-x-auto">
+      <div className="p-4 h-full overflow-x-auto overflow-y-auto ">
         <ListContainer data={listsData} />
       </div>
     </>

@@ -1,6 +1,5 @@
 "use client";
 
-import List from "@/models/List.model";
 import { Icons } from "@/components/icons";
 import {
   Popover,
@@ -18,6 +17,9 @@ interface ListHeaderProps {
 
 export const ListHeader = ({ data }: ListHeaderProps) => {
   const Icon = Icons["ellipsisHorizontal"];
+  const Trash = Icons["trash"];
+  const AddIcon = Icons["add"];
+  const EditIcon = Icons["edit"];
 
   const { reLoad, setReLoad } = useBoard();
   const [isLoading, setIsLoading] = useState(false);
@@ -56,16 +58,35 @@ export const ListHeader = ({ data }: ListHeaderProps) => {
   return (
     <div className="py-2 px-2 text-sm font-semibold flex flex-col gap-y-2">
       <div className="w-full flex flex-row my-2">
-        <div className="grow">{data.title}</div>{" "}
+        <div className="grow">{data.title}</div>
         <div>
           <Popover>
             <PopoverTrigger>
               <Icon />
             </PopoverTrigger>
-            <PopoverContent className="w-26">
-              <ul>
-                <li>add card</li>
-                <li onClick={(e: any) => handleDeleteList(data.id)}>delete</li>
+            <PopoverContent className="w-32">
+              <ul className="flex flex-col gap-y-4">
+                <li className="flex flex-wrap flex-row text-blue-900 gap-0.5">
+                  <div>
+                    <EditIcon className="text-md" />
+                  </div>
+                  <div>Edit list</div>
+                </li>
+                <li className="flex flex-wrap flex-row text-green-900 gap-0.5">
+                  <div>
+                    <AddIcon className="text-md" />
+                  </div>
+                  <div>add card</div>
+                </li>
+                <li
+                  onClick={(e: any) => handleDeleteList(data.id)}
+                  className="flex flex-wrap flex-row text-red-900 gap-2"
+                >
+                  <div>
+                    <Trash className="text-md" />
+                  </div>
+                  <div>delete</div>
+                </li>
               </ul>
             </PopoverContent>
           </Popover>

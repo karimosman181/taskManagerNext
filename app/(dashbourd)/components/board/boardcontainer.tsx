@@ -7,7 +7,9 @@ import Board from "./board";
 export default function BoardContainer() {
   return (
     <BoardProvider>
-      <Board></Board>
+      <div className="px-4 h-full py-4">
+        <Board></Board>
+      </div>
     </BoardProvider>
   );
 }

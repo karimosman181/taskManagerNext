@@ -27,6 +27,7 @@ import {
   PanelsLeftBottom,
   UsersRound,
   Ellipsis,
+  Pencil,
   type Icon as LucideIcon,
   EllipsisVertical,
 } from "lucide-react";
@@ -59,6 +60,7 @@ export const Icons = {
   laptop: Laptop,
   home: Home,
   ellipsisHorizontal: Ellipsis,
+  edit: Pencil,
   gitHub: ({ ...props }: LucideProps) => (
     <svg
       aria-hidden="true"
