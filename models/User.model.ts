@@ -1,283 +1,314 @@
 // 'use server';
-import { DataTypes, Model, Op } from 'sequelize';
-import sequelize from '@/config/sequelize';
+import { DataTypes, Model, Op } from "sequelize";
+import sequelize from "@/config/sequelize";
 
-import { hashSync, compareSync } from 'bcryptjs';
-import * as log from '@/lib/common/logger';
-import { getJwt, logout } from '@/lib/server/auth';
-import authConfig from '@/config/authConfig';
-import { userSchemaConstraints, USER_ROLES, USER_STATUS } from '../yup/user.schema';
+import { hashSync, compareSync } from "bcryptjs";
+import * as log from "@/lib/common/logger";
+import { getJwt, logout } from "@/lib/server/auth";
+import authConfig from "@/config/authConfig";
+import {
+  userSchemaConstraints,
+  USER_ROLES,
+  USER_STATUS,
+} from "../yup/user.schema";
 
-import { HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyHasAssociationMixin, Association, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
+import {
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+} from "sequelize";
 
-import UserOrganization from './UserOrganization.model';
+import UserOrganization from "./UserOrganization.model";
 
-import { I_User, I_UserCreate, I_UserPublic } from './User.types';
-import Organization from './Organization.model';
+import { I_User, I_UserCreate, I_UserPublic } from "./User.types";
+import Organization from "./Organization.model";
+import Card from "./Card.model";
 
 class User extends Model<I_User, I_UserCreate> implements I_User {
-	public id!: I_User['id'];
-	public email!: I_User['email'];
-	public password!: I_User['password'];
-	public firstName!: I_User['firstName'];
-	public lastName!: I_User['lastName'];
-	public avatar!: I_User['avatar'];
-	public role!: I_User['role'];
-	public status!: I_User['status'];
-	public createdAt!: I_User['createdAt'];
-	public updatedAt!: I_User['updatedAt'];
-	public deletedAt!: I_User['deletedAt'];
-	public lastLogin!: I_User['lastLogin'];
-	public lastSeen!: I_User['lastSeen'];
+  public id!: I_User["id"];
+  public email!: I_User["email"];
+  public password!: I_User["password"];
+  public firstName!: I_User["firstName"];
+  public lastName!: I_User["lastName"];
+  public avatar!: I_User["avatar"];
+  public role!: I_User["role"];
+  public status!: I_User["status"];
+  public createdAt!: I_User["createdAt"];
+  public updatedAt!: I_User["updatedAt"];
+  public deletedAt!: I_User["deletedAt"];
+  public lastLogin!: I_User["lastLogin"];
+  public lastSeen!: I_User["lastSeen"];
 
-	public static readonly jwtExpires = authConfig.jwtExpires;
+  public static readonly jwtExpires = authConfig.jwtExpires;
 
-	public getUserOrganizations!: HasManyGetAssociationsMixin<UserOrganization>; // Note the null assertions!
- 	public addUserOrganization!: HasManyAddAssociationMixin<UserOrganization, UserOrganization['id']>;
-  	public hasUserOrganization!: HasManyHasAssociationMixin<UserOrganization, UserOrganization['id']>;
-  	public countUserOrganizations!: HasManyCountAssociationsMixin;
-  	public createUserOrganization!: HasManyCreateAssociationMixin<UserOrganization>;
+  public getUserOrganizations!: HasManyGetAssociationsMixin<UserOrganization>; // Note the null assertions!
+  public addUserOrganization!: HasManyAddAssociationMixin<
+    UserOrganization,
+    UserOrganization["id"]
+  >;
+  public hasUserOrganization!: HasManyHasAssociationMixin<
+    UserOrganization,
+    UserOrganization["id"]
+  >;
+  public countUserOrganizations!: HasManyCountAssociationsMixin;
+  public createUserOrganization!: HasManyCreateAssociationMixin<UserOrganization>;
 
-  	public readonly userOrganizations?: UserOrganization[]; 
+  public readonly userOrganizations?: UserOrganization[];
 
-  	public static associations: {
-    	userOrganizations: Association<User, UserOrganization>;
-  	};
+  public getCards!: HasManyGetAssociationsMixin<Card>; // Note the null assertions!
+  public addCard!: HasManyAddAssociationMixin<Card, Card["id"]>;
+  public hasCard!: HasManyHasAssociationMixin<Card, Card["id"]>;
+  public countCards!: HasManyCountAssociationsMixin;
 
-	public static async getByLoginId(loginId: string) {
-		const user = await User.findOne({
-			where: {
-				email: loginId.toLowerCase(),
-			},
-		});
+  public readonly cards?: Card[];
 
-		return user;
-	}
+  public static associations: {
+    userOrganizations: Association<User, UserOrganization>;
+    Cards: Association<User, Card>;
+  };
 
-	public verifyPassword(password: I_User['password']) {
-		return compareSync(password, this.password);
-	}
+  public static async getByLoginId(loginId: string) {
+    const user = await User.findOne({
+      where: {
+        email: loginId.toLowerCase(),
+      },
+    });
 
-	public static async signup(firstName: I_User['firstName'], lastName: I_User['lastName'], email: I_User['email'], password: I_User['password'], role: I_User['role'] = 'admin', status:I_User['status'] = 'active'){
-		try {
-			const checkUser = await User.getByLoginId(email);
+    return user;
+  }
 
-			if(checkUser){
-				throw new Error('Email Already taken !!');
-			} 
+  public verifyPassword(password: I_User["password"]) {
+    return compareSync(password, this.password);
+  }
 
-		const newUser = await User.create({
-		    firstName: firstName,
-		    lastName: lastName,
-		    email: email,
-		    password: password,
-            role: role,
-		    status: status,
-	    });
+  public static async signup(
+    firstName: I_User["firstName"],
+    lastName: I_User["lastName"],
+    email: I_User["email"],
+    password: I_User["password"],
+    role: I_User["role"] = "admin",
+    status: I_User["status"] = "active"
+  ) {
+    try {
+      const checkUser = await User.getByLoginId(email);
 
-		const UserId = newUser.id;
+      if (checkUser) {
+        throw new Error("Email Already taken !!");
+      }
 
-		const newOrganization = await Organization.create({
-			name: "Personal Organization",
-			description: "Personal Organization",
-			avatar: 'avatars/org/org1.svg',
-		})
+      const newUser = await User.create({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        role: role,
+        status: status,
+      });
 
-		const newOrganizationId = newOrganization.id;
+      const UserId = newUser.id;
 
-		const userOrganization = await newUser.createUserOrganization({
-			role: "admin",
-		});
+      const newOrganization = await Organization.create({
+        name: "Personal Organization",
+        description: "Personal Organization",
+        avatar: "avatars/org/org1.svg",
+      });
 
-		await newOrganization.addUserOrganization(userOrganization);
+      const newOrganizationId = newOrganization.id;
 
-		const currentUser = await User.findByPk(UserId, {
-    		include: [User.associations.userOrganizations],
-    		rejectOnEmpty: true, // Specifying true here removes `null` from the return type!
-  		});
+      const userOrganization = await newUser.createUserOrganization({
+        role: "admin",
+      });
 
-		return currentUser;
-		} catch (error: any) {
-			log.error(error);
-			throw new Error('Oops, Something went wrong !!!');
-		}
-	}
-	public static async login(login: string, password: I_User['password']) {
-		try {
-			const user = await User.getByLoginId(login);
+      await newOrganization.addUserOrganization(userOrganization);
 
-			if (!user) {
-				throw new Error('User not found');
-			}
+      const currentUser = await User.findByPk(UserId, {
+        include: [User.associations.userOrganizations],
+        rejectOnEmpty: true, // Specifying true here removes `null` from the return type!
+      });
 
-			// Check user status
-			if (user.status === 'inactive' || user.status === 'banned') {
-				throw new Error('User is inactive or banned');
-			}
+      return currentUser;
+    } catch (error: any) {
+      log.error(error);
+      throw new Error("Oops, Something went wrong !!!");
+    }
+  }
+  public static async login(login: string, password: I_User["password"]) {
+    try {
+      const user = await User.getByLoginId(login);
 
-			user.lastLogin = new Date();
-			user.lastSeen = new Date();
-			await user.save();
+      if (!user) {
+        throw new Error("User not found");
+      }
 
-			const isPasswordValid = user.verifyPassword(password);
+      // Check user status
+      if (user.status === "inactive" || user.status === "banned") {
+        throw new Error("User is inactive or banned");
+      }
 
-			if (!isPasswordValid) {
-				throw new Error('Invalid password');
-			}
+      user.lastLogin = new Date();
+      user.lastSeen = new Date();
+      await user.save();
 
-			return user;
-		} catch (error: any) {
-			log.error(error);
-			throw new Error('Invalid login or password');
-		}
-	}
+      const isPasswordValid = user.verifyPassword(password);
 
-	public static async getAuthUserOrgsFromDb() {
-		const jwt = await getJwt();
+      if (!isPasswordValid) {
+        throw new Error("Invalid password");
+      }
 
-		if (!jwt) {
-			return null;
-		}
+      return user;
+    } catch (error: any) {
+      log.error(error);
+      throw new Error("Invalid login or password");
+    }
+  }
 
-	}
+  public static async getAuthUserOrgsFromDb() {
+    const jwt = await getJwt();
 
-	public static async getAuthUserFromDb() {
-		const jwt = await getJwt();
+    if (!jwt) {
+      return null;
+    }
+  }
 
-		if (!jwt) {
-			return null;
-		}
+  public static async getAuthUserFromDb() {
+    const jwt = await getJwt();
 
-		const user = await User.findByPk(jwt.id);
+    if (!jwt) {
+      return null;
+    }
 
-		if (!user) {
-			await logout();
-			return null;
-		}
+    const user = await User.findByPk(jwt.id);
 
-		// Check if user is banned or inactive
-		if (user && (user.status === 'banned' || user.status === 'inactive')) {
-			await logout();
-			return null;
-		}
+    if (!user) {
+      await logout();
+      return null;
+    }
 
-		return user;
-	}
+    // Check if user is banned or inactive
+    if (user && (user.status === "banned" || user.status === "inactive")) {
+      await logout();
+      return null;
+    }
 
-	public static filterPublic(user: I_User): I_UserPublic {
-		const { password, ...userPublic } = user;
-		return userPublic;
-	}
+    return user;
+  }
 
-	public exportPublic(): I_UserPublic {
-		const { password, ...user } = this.toJSON() as I_User;
+  public static filterPublic(user: I_User): I_UserPublic {
+    const { password, ...userPublic } = user;
+    return userPublic;
+  }
 
-		return user;
-	}
+  public exportPublic(): I_UserPublic {
+    const { password, ...user } = this.toJSON() as I_User;
+
+    return user;
+  }
 }
 
 User.init(
-	{
-		id: {
-			type: DataTypes.UUID,
-			defaultValue: DataTypes.UUIDV4,
-			primaryKey: true,
-		},
-		email: {
-			type: DataTypes.STRING,
-			allowNull: false,
-			unique: true,
-			validate: {
-				isEmail: true,
-				min: userSchemaConstraints.email.minLength,
-				max: userSchemaConstraints.email.maxLength,
-			},
-		},
-		password: {
-			type: DataTypes.STRING,
-			allowNull: false,
-		},
-		firstName: {
-			type: DataTypes.STRING,
-			allowNull: true,
-			validate: {
-				min: userSchemaConstraints.firstName.minLength,
-				max: userSchemaConstraints.firstName.maxLength,
-			},
-		},
-		lastName: {
-			type: DataTypes.STRING,
-			allowNull: true,
-			validate: {
-				min: userSchemaConstraints.lastName.minLength,
-				max: userSchemaConstraints.lastName.maxLength,
-			},
-		},
-		avatar: {
-			type: DataTypes.STRING,
-			allowNull: true,
-		},
-		role: {
-			type: DataTypes.ENUM(...USER_ROLES),
-			defaultValue: 'customer',
-			allowNull: false,
-			validate: {
-				isIn: [USER_ROLES],
-			},
-		},
-		status: {
-			type: DataTypes.ENUM(...USER_STATUS),
-			defaultValue: 'pending',
-			allowNull: false,
-			validate: {
-				isIn: [USER_STATUS],
-			},
-		},
-		createdAt: {
-			type: DataTypes.DATE,
-			defaultValue: DataTypes.NOW,
-			allowNull: false,
-		},
-		updatedAt: {
-			type: DataTypes.DATE,
-			defaultValue: DataTypes.NOW,
-			allowNull: false,
-		},
-		deletedAt: {
-			type: DataTypes.DATE,
-			allowNull: true,
-		},
-		lastLogin: {
-			type: DataTypes.DATE,
-			allowNull: true,
-		},
-		lastSeen: {
-			type: DataTypes.DATE,
-			allowNull: true,
-		},
-	},
-	{
-		sequelize,
-		modelName: 'User',
-		tableName: 'users',
-		timestamps: true,
-		underscored: true,
-		paranoid: true,
-		hooks: {
-			beforeSave: async (user: User) => {
-				if (user.changed('password')) {
-					user.password = hashSync(user.password, authConfig.saltRounds);
-				}
-			},
-		},
-		indexes: [
-			{
-				fields: ['email'],
-				unique: true,
-			},
-		],
-	},
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+      validate: {
+        isEmail: true,
+        min: userSchemaConstraints.email.minLength,
+        max: userSchemaConstraints.email.maxLength,
+      },
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        min: userSchemaConstraints.firstName.minLength,
+        max: userSchemaConstraints.firstName.maxLength,
+      },
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        min: userSchemaConstraints.lastName.minLength,
+        max: userSchemaConstraints.lastName.maxLength,
+      },
+    },
+    avatar: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    role: {
+      type: DataTypes.ENUM(...USER_ROLES),
+      defaultValue: "customer",
+      allowNull: false,
+      validate: {
+        isIn: [USER_ROLES],
+      },
+    },
+    status: {
+      type: DataTypes.ENUM(...USER_STATUS),
+      defaultValue: "pending",
+      allowNull: false,
+      validate: {
+        isIn: [USER_STATUS],
+      },
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      allowNull: false,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      defaultValue: DataTypes.NOW,
+      allowNull: false,
+    },
+    deletedAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    lastLogin: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    lastSeen: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  },
+  {
+    sequelize,
+    modelName: "User",
+    tableName: "users",
+    timestamps: true,
+    underscored: true,
+    paranoid: true,
+    hooks: {
+      beforeSave: async (user: User) => {
+        if (user.changed("password")) {
+          user.password = hashSync(user.password, authConfig.saltRounds);
+        }
+      },
+    },
+    indexes: [
+      {
+        fields: ["email"],
+        unique: true,
+      },
+    ],
+  }
 );
-
 
 export default User;

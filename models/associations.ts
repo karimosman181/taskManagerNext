@@ -2,6 +2,7 @@ import User from "./User.model";
 import Organization from "@/models/Organization.model";
 import UserOrganization from "./UserOrganization.model";
 import List from "./List.model";
+import Card from "./Card.model";
 
 // TODO - Add associations here
 User.hasMany(UserOrganization, {
@@ -26,5 +27,13 @@ Organization.hasMany(List, {
 });
 
 List.belongsTo(Organization);
+
+List.hasMany(Card, {
+  sourceKey: "id",
+  foreignKey: "listId",
+  as: "ListCards",
+});
+
+Card.belongsTo(List);
 
 export { User, Organization, UserOrganization, List };

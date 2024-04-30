@@ -4,6 +4,17 @@ import sequelize from "@/config/sequelize";
 import { I_Card, I_CardCreate } from "./Card.types";
 import { cardSchemaConstraints } from "@/yup/card.schema";
 
+import User from "./User.model";
+
+import {
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+} from "sequelize";
+
 class Card extends Model<I_Card, I_CardCreate> implements I_Card {
   public id!: I_Card["id"];
   public listId!: I_Card["listId"];
@@ -18,6 +29,15 @@ class Card extends Model<I_Card, I_CardCreate> implements I_Card {
   public createdAt!: I_Card["createdAt"];
   public updatedAt!: I_Card["updatedAt"];
   public deletedAt!: I_Card["deletedAt"];
+
+  public getUser!: HasManyGetAssociationsMixin<User>; // Note the null assertions!
+  public hasUser!: HasManyHasAssociationMixin<User, User["id"]>;
+  public countUsers!: HasManyCountAssociationsMixin;
+  public readonly users?: User[];
+
+  public static associations: {
+    User: Association<Card, User>;
+  };
 }
 
 Card.init(
@@ -95,3 +115,5 @@ Card.init(
     },
   }
 );
+
+export default Card;

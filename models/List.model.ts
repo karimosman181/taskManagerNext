@@ -4,6 +4,17 @@ import sequelize from "@/config/sequelize";
 import { I_List, I_ListCreate } from "./List.types";
 import { listSchemaConstraints } from "@/yup/list.schema";
 
+import Card from "./Card.model";
+
+import {
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+} from "sequelize";
+
 class List extends Model<I_List, I_ListCreate> implements I_List {
   public id!: I_List["id"];
   public organizationId!: I_List["organizationId"];
@@ -15,6 +26,18 @@ class List extends Model<I_List, I_ListCreate> implements I_List {
   public createdAt!: I_List["createdAt"];
   public updatedAt!: I_List["updatedAt"];
   public deletedAt!: I_List["deletedAt"];
+
+  public getCard!: HasManyGetAssociationsMixin<Card>; // Note the null assertions!
+  public addCard!: HasManyAddAssociationMixin<Card, Card["id"]>;
+  public hasCard!: HasManyHasAssociationMixin<Card, Card["id"]>;
+  public countCards!: HasManyCountAssociationsMixin;
+  public createCard!: HasManyCreateAssociationMixin<Card>;
+
+  public readonly cards?: Card[];
+
+  public static associations: {
+    Card: Association<List, Card>;
+  };
 }
 
 List.init(
