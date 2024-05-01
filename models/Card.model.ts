@@ -4,16 +4,14 @@ import sequelize from "@/config/sequelize";
 import { I_Card, I_CardCreate } from "./Card.types";
 import { cardSchemaConstraints } from "@/yup/card.schema";
 
-import User from "./User.model";
+// import User from "./User.model";
 
-import {
-  HasManyGetAssociationsMixin,
-  HasManyAddAssociationMixin,
-  HasManyHasAssociationMixin,
-  Association,
-  HasManyCountAssociationsMixin,
-  HasManyCreateAssociationMixin,
-} from "sequelize";
+// import {
+//   HasManyGetAssociationsMixin,
+//   HasManyHasAssociationMixin,
+//   Association,
+//   HasManyCountAssociationsMixin,
+// } from "sequelize";
 
 class Card extends Model<I_Card, I_CardCreate> implements I_Card {
   public id!: I_Card["id"];
@@ -23,21 +21,20 @@ class Card extends Model<I_Card, I_CardCreate> implements I_Card {
   public content!: I_Card["content"];
   public order!: I_Card["order"];
   public color!: I_Card["color"];
-  public tags!: I_Card["tags"];
+  // public tags!: I_Card["tags"];
   public dueAt!: I_Card["dueAt"];
-  public userIds!: I_Card["userIds"];
   public createdAt!: I_Card["createdAt"];
   public updatedAt!: I_Card["updatedAt"];
   public deletedAt!: I_Card["deletedAt"];
 
-  public getUser!: HasManyGetAssociationsMixin<User>; // Note the null assertions!
-  public hasUser!: HasManyHasAssociationMixin<User, User["id"]>;
-  public countUsers!: HasManyCountAssociationsMixin;
-  public readonly users?: User[];
+  // public getUser!: HasManyGetAssociationsMixin<User>; // Note the null assertions!
+  // public hasUser!: HasManyHasAssociationMixin<User, User["id"]>;
+  // public countUsers!: HasManyCountAssociationsMixin;
+  // public readonly users?: User[];
 
-  public static associations: {
-    User: Association<Card, User>;
-  };
+  // public static associations: {
+  //   User: Association<Card, User>;
+  // };
 }
 
 Card.init(
@@ -75,14 +72,10 @@ Card.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
-    tags: {
-      type: DataTypes.ARRAY,
-      allowNull: true,
-    },
-    userIds: {
-      type: DataTypes.ARRAY,
-      allowNull: true,
-    },
+    // tags: {
+    //   type: DataTypes.ARRAY,
+    //   allowNull: true,
+    // },
     dueAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,

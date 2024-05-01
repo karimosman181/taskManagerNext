@@ -6,8 +6,7 @@ export interface I_Card {
   content: Text;
   order: number;
   color: string;
-  userIds: string[];
-  tags: string[];
+  // tags: string[];
   dueAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -26,8 +25,8 @@ export interface I_CardCreate
     | "deletedAt"
     | "color"
     | "dueAt"
-    | "tags"
-    | "userIds"
+    | "listId"
+    // | "tags"
   > {}
 
 export interface I_CardPublic extends I_Card {}

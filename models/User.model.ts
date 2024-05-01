@@ -58,16 +58,16 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 
   public readonly userOrganizations?: UserOrganization[];
 
-  public getCards!: HasManyGetAssociationsMixin<Card>; // Note the null assertions!
-  public addCard!: HasManyAddAssociationMixin<Card, Card["id"]>;
-  public hasCard!: HasManyHasAssociationMixin<Card, Card["id"]>;
-  public countCards!: HasManyCountAssociationsMixin;
+  // public getCards!: HasManyGetAssociationsMixin<Card>; // Note the null assertions!
+  // public addCard!: HasManyAddAssociationMixin<Card, Card["id"]>;
+  // public hasCard!: HasManyHasAssociationMixin<Card, Card["id"]>;
+  // public countCards!: HasManyCountAssociationsMixin;
 
-  public readonly cards?: Card[];
+  // public readonly cards?: Card[];
 
   public static associations: {
     userOrganizations: Association<User, UserOrganization>;
-    Cards: Association<User, Card>;
+    // Cards: Association<User, Card>;
   };
 
   public static async getByLoginId(loginId: string) {

@@ -36,4 +36,7 @@ List.hasMany(Card, {
 
 Card.belongsTo(List);
 
-export { User, Organization, UserOrganization, List };
+User.belongsToMany(Card, { through: "User_Cards" });
+Card.belongsToMany(User, { through: "User_Cards" });
+
+export { User, Organization, UserOrganization, List, Card };
