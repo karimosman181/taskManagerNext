@@ -10,6 +10,7 @@ import { I_ListPublic } from "@/models/List.types";
 import { I_ApiListDeleteResponse } from "@/app/api/account/organizations/lists/route";
 import { useBoard } from "@/contexts/BoardContext";
 import { useState } from "react";
+import { AddCard } from "../card/addCard";
 
 interface ListHeaderProps {
   data: I_ListPublic;
@@ -72,11 +73,12 @@ export const ListHeader = ({ data }: ListHeaderProps) => {
                   </div>
                   <div>Edit list</div>
                 </li>
-                <li className="flex flex-wrap flex-row text-green-900 gap-0.5">
-                  <div>
+                <li className="">
+                  {/* <div>
                     <AddIcon className="text-md" />
                   </div>
-                  <div>add card</div>
+                  <div>add card</div> */}
+                  <AddCard list_id={data.id}></AddCard>
                 </li>
                 <li
                   onClick={(e: any) => handleDeleteList(data.id)}
