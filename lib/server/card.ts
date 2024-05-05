@@ -32,7 +32,7 @@ export async function createCard(ListId: string, data: I_CardCreate) {
     const lastCardOrder = await Card.findOne({
       order: [["order", "DESC"]],
       where: {
-        listId: data.listId,
+        listId: ListId,
         deletedAt: null,
       },
       attributes: ["order"],
@@ -50,10 +50,10 @@ export async function createCard(ListId: string, data: I_CardCreate) {
       order: order,
       color: data.color,
       content: data.content,
-      listId: data.listId,
+      listId: ListId,
     });
 
-    await list?.addCard(newCard);
+    // await list?.addCard(newCard);
 
     return newCard;
   } catch (_) {

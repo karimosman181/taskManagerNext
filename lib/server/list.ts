@@ -3,6 +3,7 @@ import {
   User,
   Organization,
   List,
+  Card,
 } from "@/models/associations";
 import { cookies } from "next/headers";
 import { I_ListCreate } from "@/models/List.types";
@@ -21,7 +22,11 @@ export function getLists() {
         organizationId: selectedOrg.selectedOrg,
         deletedAt: null,
       },
-      order: [["order", "ASC"]],
+      include: [{ model: Card, as: "ListCards" }],
+      order: [
+        ["order", "ASC"],
+        ["ListCards", "order", "ASC"],
+      ],
     });
   } catch (_) {
     return null;
