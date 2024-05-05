@@ -1,3 +1,5 @@
+import { I_CardPublic } from "./Card.types";
+
 export interface I_List {
   id: string;
   organizationId: string;
@@ -25,4 +27,6 @@ export interface I_ListCreate
     | "color"
   > {}
 
-export interface I_ListPublic extends I_List {}
+export interface I_ListPublic extends I_List {
+  ListCards: I_CardPublic[];
+}

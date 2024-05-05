@@ -17,10 +17,10 @@ export async function POST(request: NextRequest) {
   const body = (await request.json()) as I_ApiCardCreateRequest;
 
   // trim all input values
-  const { listId, title, description, color, content } = Object.fromEntries(
+  const { title, description, color, content, listId } = Object.fromEntries(
     Object.entries(body).map(([key, value]) => [key, value?.trim()])
   ) as I_ApiCardCreateRequest;
-  if (!title || !description || !color) {
+  if (!title || !description || !color || !listId) {
     const res: I_ApiCardCreateResponse = {
       success: false,
       message: "A required field is missing",
@@ -29,14 +29,14 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const list: any = await createCard(listId, {
+    const card: any = await createCard(listId, {
       title,
       description,
       color,
       content,
     });
 
-    if (list) {
+    if (card) {
       const res: I_ApiCardCreateResponse = {
         success: true,
         message: "Card Created",
