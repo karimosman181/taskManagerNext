@@ -14,6 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import { Textarea } from "@/components/ui/textarea";
+
 import {
   Dialog,
   DialogContent,
@@ -53,6 +55,7 @@ export const AddCard = ({ list_id }: AddCardProps) => {
   const formRef = useRef<ElementRef<"form">>(null);
   const titleRef = useRef<ElementRef<"input">>(null);
   const descriptionRef = useRef<ElementRef<"input">>(null);
+  const contentRef = useRef<ElementRef<"textarea">>(null);
   const [color, setColor] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -101,7 +104,7 @@ export const AddCard = ({ list_id }: AddCardProps) => {
     } finally {
       setTimeout(() => {
         setIsLoading(false);
-        setOpen(false);
+        // setOpen(false);
         // router.refresh();
         setReLoad(!reLoad);
       }, 1000);
@@ -120,69 +123,100 @@ export const AddCard = ({ list_id }: AddCardProps) => {
             Add Card
           </button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[675px]">
           <DialogHeader>
             <DialogTitle>Create Card</DialogTitle>
             <DialogDescription>
               Create a new Card here. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
-          <form ref={formRef} className="w-full p-3 space-y-4 ">
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="title">Title</Label>
-              <Input
-                id="title"
-                type="text"
-                ref={titleRef}
-                className="input input-bordered"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    if (descriptionRef.current) {
-                      descriptionRef.current.focus();
-                    }
-                  }
-                }}
-              />
-            </LabelInputContainer>
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="description">Description</Label>
-              <Input
-                id="description"
-                type="text"
-                ref={descriptionRef}
-                className="input input-bordered"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                  }
-                }}
-              />
-              <LabelInputContainer className="mb-4">
-                <Label htmlFor="email">Color</Label>
-                <Select
-                  onValueChange={(e: any) => {
-                    setColor(e);
-                  }}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select Color" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {colors.map((color: string, index) => (
-                      <SelectItem key={index} value={color}>
-                        <div
-                          className={
-                            "w-[200px] rounded-md mx-0 px-0 items-start pb-4 cursor-pointer " +
-                            color
-                          }
-                        >
-                          <div className="w-full">&nbsp;</div>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </LabelInputContainer>
-            </LabelInputContainer>
+          <form ref={formRef} className="w-full p-3 space-y-4">
+            <div className=" flex flex-column gap-x-8">
+              <div className="basis-[70%]">
+                <div className="grid w-full gap-1.5">
+                  <Label htmlFor="content">Content</Label>
+                  <Textarea
+                    className="min-h-[200px] w-full"
+                    placeholder="Type the card content here."
+                    id="content"
+                    ref={contentRef}
+                  />
+                  <p className="text-sm text-muted-foreground">
+                    leave empty if there is no content
+                  </p>
+                </div>
+              </div>
+              <div className="basis-[30%]">
+                <LabelInputContainer className="mb-4">
+                  <Label htmlFor="title">Title</Label>
+                  <Input
+                    id="title"
+                    type="text"
+                    ref={titleRef}
+                    className="input input-bordered"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        if (descriptionRef.current) {
+                          descriptionRef.current.focus();
+                        }
+                      }
+                    }}
+                  />
+                </LabelInputContainer>
+                <LabelInputContainer className="mb-4">
+                  <Label htmlFor="description">Description</Label>
+                  <Input
+                    id="description"
+                    type="text"
+                    ref={descriptionRef}
+                    className="input input-bordered"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                      }
+                    }}
+                  />
+                  <LabelInputContainer className="mb-4">
+                    <Label htmlFor="email">Color</Label>
+                    <Select
+                      onValueChange={(e: any) => {
+                        setColor(e);
+                      }}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Color" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {colors.map((color: string, index) => (
+                          <SelectItem key={index} value={color}>
+                            <div
+                              className={
+                                "w-[200px] rounded-md mx-0 px-0 items-start pb-4 cursor-pointer " +
+                                color
+                              }
+                            >
+                              <div className="w-full">&nbsp;</div>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </LabelInputContainer>
+                </LabelInputContainer>
+              </div>
+            </div>
+            <div className="grid w-full gap-1.5">
+              <Label>Members</Label>
+              <div className="flex flex-wrap gap-2">
+                <div></div>
+                <div>
+                  <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                    <span className="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-black text-xl">
+                      +
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
           </form>
           <DialogFooter>
             <div className="flex flex-col w-full">
