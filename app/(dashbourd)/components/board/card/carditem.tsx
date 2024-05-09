@@ -6,6 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Icons } from "@/components/icons";
 
+
+import { Draggable } from "@hello-pangea/dnd";
+
 import {
   Select,
   SelectContent,
@@ -76,20 +79,28 @@ export const CardItem = ({ data, index }: ListItemProps) => {
           setediting(false);
         }}
       >
-        <DialogTrigger asChild>
-          <Card>
-            <CardHeader>
-              <CardTitle>{data.title}</CardTitle>
-              <CardDescription>{data.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p>Card Content</p>
-            </CardContent>
-            <CardFooter>
-              <p>Card Footer</p>
-            </CardFooter>
-          </Card>
-        </DialogTrigger>
+        <Draggable draggableId={data.id} index={index}>
+          {(provided) => (
+            <DialogTrigger asChild>
+              <Card
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                ref={provided.innerRef}
+              >
+                <CardHeader>
+                  <CardTitle>{data.title}</CardTitle>
+                  <CardDescription>{data.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>Card Content</p>
+                </CardContent>
+                <CardFooter>
+                  <p>Card Footer</p>
+                </CardFooter>
+              </Card>
+            </DialogTrigger>
+          )}
+        </Draggable>
         <DialogContent className="sm:max-w-[725px]">
           <DialogHeader>
             <DialogTitle>Edit Card</DialogTitle>
@@ -220,7 +231,7 @@ export const CardItem = ({ data, index }: ListItemProps) => {
                 <button
                   className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                   type="submit"
-                  // onClick={handleCreateCard}
+                // onClick={handleCreateCard}
                 >
                   Save
                   <BottomGradient />
