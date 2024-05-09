@@ -12,6 +12,14 @@ interface ListContainerProps {
   data: I_ListPublic[] | null;
 }
 
+function reorder<T>(list: T[], startIndex: number, endIndex: number) {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+}
+
 export const ListContainer = ({ data }: ListContainerProps) => {
   const [orderedData, setOrderedData] = useState(data);
 
@@ -19,13 +27,98 @@ export const ListContainer = ({ data }: ListContainerProps) => {
     setOrderedData(data);
   }, [data]);
 
+  const onDragEnd = (result: any) => {
+    const { destination, source, type } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    //position not changed
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return
+    }
+
+    //if list moved
+    if (type === 'list') {
+      const items = reorder(
+        orderedData!,
+        source.index,
+        destination.index
+      ).map((item, index) => ({ ...item, order: index }));
+
+      setOrderedData(items);
+      //TODO: Trigger server action 
+
+    }
+
+    // if card moved
+    if (type === 'card') {
+      let newOrderedData = [...orderedData!];
+
+      const sourceList = newOrderedData.find(list => list.id === source.droppableId);
+
+      const destList = newOrderedData.find(list => list.id === destination.droppableId);
+
+      console.log('test');
+      if (!sourceList || !destList) {
+        return;
+      }
+
+      if (!sourceList.ListCards) {
+        sourceList.ListCards = [];
+      }
+
+      if (!destList.ListCards) {
+        destList.ListCards = [];
+      }
+
+      if (source.droppableId === destination.droppableId) {
+        const reorderCards = reorder(
+          sourceList.ListCards,
+          source.index,
+          destination.index
+        ).map((item, index) => ({ ...item, order: index }));
+
+        reorderCards.forEach((card, index) => {
+          card.order = index;
+        })
+
+        sourceList.ListCards = reorderCards;
+
+        setOrderedData(newOrderedData);
+        //TODO: Trigger server action 
+      } else {
+        const [movedCard] = sourceList.ListCards.splice(source.index, 1);
+
+        movedCard.listId = destination.droppableId;
+
+        destList.ListCards.splice(destination.index, 0, movedCard);
+
+        sourceList.ListCards.forEach((card, index) => {
+          card.order = index;
+        });
+
+        destList.ListCards.forEach((card, index) => {
+          card.order = index;
+        });
+
+        setOrderedData(newOrderedData);
+        //TODO: Trigger server action 
+      }
+    }
+  }
+
   return (
     <>
       {!orderedData ? (
         ""
       ) : (
         <>
-          <DragDropContext onDragEnd={() => { }}>
+          <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="lists" type="list" direction="horizontal">
               {(provided) => (
                 <ol
