@@ -29,7 +29,7 @@ export async function createCard(ListId: string, data: I_CardCreate) {
       throw new Error("List not found");
     }
 
-    const lastCardOrder = await Card.findOne({
+    const lastCardOrder: any = await Card.findOne({
       order: [["order", "DESC"]],
       where: {
         listId: ListId,
@@ -58,6 +58,26 @@ export async function createCard(ListId: string, data: I_CardCreate) {
     return newCard;
   } catch (_) {
     console.log(_);
+    return null;
+  }
+}
+
+export async function updateCardOrder(data: {
+  id: string;
+  order: number;
+  listId: string;
+}) {
+  try {
+    return await Card.update(
+      {
+        order: data.order,
+        listId: data.listId,
+      },
+      {
+        where: { id: data.id },
+      }
+    );
+  } catch (_) {
     return null;
   }
 }

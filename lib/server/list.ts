@@ -6,9 +6,9 @@ import {
   Card,
 } from "@/models/associations";
 import { cookies } from "next/headers";
-import { I_ListCreate } from "@/models/List.types";
+import { I_ListCreate, I_ListPublic } from "@/models/List.types";
 
-export function getLists() {
+export async function getLists() {
   try {
     const cookieStore = cookies();
 
@@ -17,7 +17,7 @@ export function getLists() {
 
     const selectedOrg = JSON.parse(cookieSelectedOrgData.value);
 
-    return List.findAll({
+    const lists = await List.findAll({
       where: {
         organizationId: selectedOrg.selectedOrg,
         deletedAt: null,
@@ -28,6 +28,23 @@ export function getLists() {
         ["ListCards", "order", "ASC"],
       ],
     });
+
+    return lists as unknown as I_ListPublic[];
+  } catch (_) {
+    return null;
+  }
+}
+
+export async function updateListOrder(data: { id: string; order: number }) {
+  try {
+    return await List.update(
+      {
+        order: data.order,
+      },
+      {
+        where: { id: data.id },
+      }
+    );
   } catch (_) {
     return null;
   }

@@ -27,7 +27,7 @@ export const ListContainer = ({ data }: ListContainerProps) => {
     setOrderedData(data);
   }, [data]);
 
-  const onDragEnd = (result: any) => {
+  const onDragEnd = async (result: any) => {
     const { destination, source, type } = result;
 
     if (!destination) {
@@ -51,8 +51,17 @@ export const ListContainer = ({ data }: ListContainerProps) => {
       ).map((item, index) => ({ ...item, order: index }));
 
       setOrderedData(items);
-      //TODO: Trigger server action 
 
+
+      const itemsOrders = items.map((item) => ({ id: item.id, order: item.order }));
+
+      const response = await fetch("/api/account/organizations/lists", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ data: itemsOrders }),
+      });
     }
 
     // if card moved
@@ -63,7 +72,6 @@ export const ListContainer = ({ data }: ListContainerProps) => {
 
       const destList = newOrderedData.find(list => list.id === destination.droppableId);
 
-      console.log('test');
       if (!sourceList || !destList) {
         return;
       }
@@ -90,7 +98,17 @@ export const ListContainer = ({ data }: ListContainerProps) => {
         sourceList.ListCards = reorderCards;
 
         setOrderedData(newOrderedData);
-        //TODO: Trigger server action 
+
+        const cardsOrder = reorderCards.map((item) => ({ id: item.id, order: item.order, listId: item.listId }));
+
+        const response = await fetch("/api/account/organizations/cards", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ data: cardsOrder }),
+        });
+
       } else {
         const [movedCard] = sourceList.ListCards.splice(source.index, 1);
 
@@ -108,6 +126,17 @@ export const ListContainer = ({ data }: ListContainerProps) => {
 
         setOrderedData(newOrderedData);
         //TODO: Trigger server action 
+
+        const cardsOrder = [...sourceList.ListCards.map((item) => ({ id: item.id, order: item.order, listId: sourceList.id })), ...destList.ListCards.map((item) => ({ id: item.id, order: item.order, listId: destList.id }))];
+
+        const response = await fetch("/api/account/organizations/cards", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ data: cardsOrder }),
+        });
+
       }
     }
   }

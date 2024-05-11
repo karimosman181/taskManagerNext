@@ -1,12 +1,21 @@
 import { NextResponse, NextRequest } from "next/server";
 import { apiErrorResponse } from "@/lib/server/api/errorResponse";
-import { createList, deleteListById, getLists } from "@/lib/server/list";
+import {
+  createList,
+  deleteListById,
+  getLists,
+  updateListOrder,
+} from "@/lib/server/list";
 import { I_ListPublic } from "@/models/List.types";
 
 export interface I_ApiListCreateRequest {
   title: string;
   description: string;
   color: string;
+}
+
+export interface I_ApiListOrderUpdateRequest {
+  data: { id: string; order: number }[];
 }
 
 export interface I_ApiListCreateResponse extends ApiResponse {}
@@ -75,6 +84,38 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function PATCH(request: NextRequest) {
+  const body = (await request.json()) as I_ApiListOrderUpdateRequest;
+
+  const { data } = body;
+
+  if (!data || data.length === 0) {
+    const res: I_ApiListCreateResponse = {
+      success: false,
+      message: "A required field is missing",
+    };
+    return NextResponse.json(res, { status: 400 });
+  }
+
+  try {
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+
+      await updateListOrder({ id: element.id, order: element.order });
+
+      if (index === data.length - 1) {
+        const res: I_ApiListCreateResponse = {
+          success: true,
+          message: "lists order updated",
+        };
+        return NextResponse.json(res, { status: 200 });
+      }
+    }
+  } catch (err: any) {
+    return apiErrorResponse(err);
+  }
+}
+
 export async function DELETE(request: NextRequest) {
   const id = request.nextUrl.searchParams.get("id");
 
@@ -85,7 +126,7 @@ export async function DELETE(request: NextRequest) {
       if (res) {
         const res: I_ApiListCreateResponse = {
           success: true,
-          message: "list Created",
+          message: "list Deleted!",
         };
         return NextResponse.json(res, { status: 200 });
       } else {
