@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Icons } from "@/components/icons";
+import { Badge } from "@/components/ui/badge";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 
 import { Draggable } from "@hello-pangea/dnd";
@@ -18,6 +21,7 @@ import {
 } from "@/components/ui/select";
 
 import { Textarea } from "@/components/ui/textarea";
+
 
 import {
   Card,
@@ -66,6 +70,8 @@ export const CardItem = ({ data, index }: ListItemProps) => {
 
   const Icon = Icons["edit"];
 
+  const MessageIcon = Icons["message"];
+
   useEffect(() => {
     setColor(data.color);
   }, [data]);
@@ -92,10 +98,39 @@ export const CardItem = ({ data, index }: ListItemProps) => {
                   <CardDescription>{data.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p>Card Content</p>
+                  <div className="flex flex-row grow justify-between">
+                    <div>
+                      <Badge>Badge</Badge>
+                    </div>
+                    <div>
+                      <div className="flex -space-x-2 *:ring *:ring-white">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={""} />
+                          <AvatarFallback>
+                            TT
+                          </AvatarFallback>
+                        </Avatar>
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={""} />
+                          <AvatarFallback>
+                            TT
+                          </AvatarFallback>
+                        </Avatar>
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={""} />
+                          <AvatarFallback>
+                            TT
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                    </div>
+                  </div>
                 </CardContent>
-                <CardFooter>
-                  <p>Card Footer</p>
+                <CardFooter className="border-t-2 border-solid border-gray-200 pt-4">
+                  <div className="flex flex-wrap gap-x-2">
+                    <MessageIcon />
+                    <span className="text-gray-400">0</span>
+                  </div>
                 </CardFooter>
               </Card>
             </DialogTrigger>
