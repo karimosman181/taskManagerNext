@@ -125,7 +125,6 @@ export const ListContainer = ({ data }: ListContainerProps) => {
         });
 
         setOrderedData(newOrderedData);
-        //TODO: Trigger server action 
 
         const cardsOrder = [...sourceList.ListCards.map((item) => ({ id: item.id, order: item.order, listId: sourceList.id })), ...destList.ListCards.map((item) => ({ id: item.id, order: item.order, listId: destList.id }))];
 
