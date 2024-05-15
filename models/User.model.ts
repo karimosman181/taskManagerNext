@@ -26,6 +26,7 @@ import UserOrganization from "./UserOrganization.model";
 import { I_User, I_UserCreate, I_UserPublic } from "./User.types";
 import Organization from "./Organization.model";
 import Card from "./Card.model";
+import UserCard from "./UserCard.model";
 
 class User extends Model<I_User, I_UserCreate> implements I_User {
   public id!: I_User["id"];
@@ -58,6 +59,13 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 
   public readonly userOrganizations?: UserOrganization[];
 
+  public getUserCard!: HasManyGetAssociationsMixin<UserCard>; // Note the null assertions!
+  public addUserCard!: HasManyAddAssociationMixin<UserCard, UserCard["id"]>;
+  public hasUserCard!: HasManyHasAssociationMixin<UserCard, UserCard["id"]>;
+  public countUserCards!: HasManyCountAssociationsMixin;
+  public createUserCard!: HasManyCreateAssociationMixin<UserCard>;
+  public readonly userCards?: UserCard[];
+
   // public getCards!: HasManyGetAssociationsMixin<Card>; // Note the null assertions!
   // public addCard!: HasManyAddAssociationMixin<Card, Card["id"]>;
   // public hasCard!: HasManyHasAssociationMixin<Card, Card["id"]>;
@@ -67,6 +75,7 @@ class User extends Model<I_User, I_UserCreate> implements I_User {
 
   public static associations: {
     userOrganizations: Association<User, UserOrganization>;
+    UserCard: Association<Card, UserCard>;
     // Cards: Association<User, Card>;
   };
 

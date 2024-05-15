@@ -1,17 +1,23 @@
-import { DataTypes, Model, Op } from "sequelize";
+import {
+  DataTypes,
+  HasManyAddAssociationMixin,
+  HasManyCreateAssociationMixin,
+  Model,
+  Op,
+} from "sequelize";
 import sequelize from "@/config/sequelize";
 
 import { I_Card, I_CardCreate } from "./Card.types";
 import { cardSchemaConstraints } from "@/yup/card.schema";
 
-// import User from "./User.model";
+import UserCard from "./UserCard.model";
 
-// import {
-//   HasManyGetAssociationsMixin,
-//   HasManyHasAssociationMixin,
-//   Association,
-//   HasManyCountAssociationsMixin,
-// } from "sequelize";
+import {
+  HasManyGetAssociationsMixin,
+  HasManyHasAssociationMixin,
+  Association,
+  HasManyCountAssociationsMixin,
+} from "sequelize";
 
 class Card extends Model<I_Card, I_CardCreate> implements I_Card {
   public id!: I_Card["id"];
@@ -27,14 +33,16 @@ class Card extends Model<I_Card, I_CardCreate> implements I_Card {
   public updatedAt!: I_Card["updatedAt"];
   public deletedAt!: I_Card["deletedAt"];
 
-  // public getUser!: HasManyGetAssociationsMixin<User>; // Note the null assertions!
-  // public hasUser!: HasManyHasAssociationMixin<User, User["id"]>;
-  // public countUsers!: HasManyCountAssociationsMixin;
-  // public readonly users?: User[];
+  public getUserCard!: HasManyGetAssociationsMixin<UserCard>; // Note the null assertions!
+  public addUserCard!: HasManyAddAssociationMixin<UserCard, UserCard["id"]>;
+  public hasUserCard!: HasManyHasAssociationMixin<UserCard, UserCard["id"]>;
+  public countUserCards!: HasManyCountAssociationsMixin;
+  public createUserCard!: HasManyCreateAssociationMixin<UserCard>;
+  public readonly userCards?: UserCard[];
 
-  // public static associations: {
-  //   User: Association<Card, User>;
-  // };
+  public static associations: {
+    UserCard: Association<Card, UserCard>;
+  };
 }
 
 Card.init(

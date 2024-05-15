@@ -6,6 +6,7 @@ import {
   Organization,
   List,
   Card,
+  UserCard,
 } from "@/models/associations";
 
 export async function syncDb() {
@@ -14,6 +15,7 @@ export async function syncDb() {
   await UserOrganization.sync({ alter: true });
   await List.sync({ alter: true });
   await Card.sync({ alter: true });
+  await UserCard.sync({ alter: true });
 }
 
 export async function seedUsers() {

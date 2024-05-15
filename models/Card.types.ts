@@ -3,7 +3,7 @@ export interface I_Card {
   listId: string;
   title: string;
   description: string;
-  content: Text;
+  content: string;
   order: number;
   color: string;
   // tags: string[];
