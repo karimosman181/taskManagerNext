@@ -244,8 +244,29 @@ export const CardItem = ({ data, index }: ListItemProps) => {
             </div>
             <div className="grid w-full gap-1.5">
               <Label>Members</Label>
-              <div className="flex flex-wrap gap-2">
-                <div></div>
+              <div className="flex flex-wrap gap-2 mt-4">
+                <div>
+                  <div className="flex -space-x-2 *:ring *:ring-white">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={""} />
+                      <AvatarFallback>
+                        TT
+                      </AvatarFallback>
+                    </Avatar>
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={""} />
+                      <AvatarFallback>
+                        TT
+                      </AvatarFallback>
+                    </Avatar>
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={""} />
+                      <AvatarFallback>
+                        TT
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                </div>
                 {editing ? (
                   <div>
                     <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">

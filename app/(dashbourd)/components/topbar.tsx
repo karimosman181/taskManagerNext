@@ -6,6 +6,7 @@ import { getUserSelectedOrgData } from "@/lib/client/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import AvatarsGroup from "./ui/avatarsgroup";
 import { useApp } from "@/contexts/AppContext";
+import { InviteUser } from "./users/inviteUser";
 
 async function getOrganization(org_id: string) {
   const response = await fetch("/api/account/organizations/" + org_id, {
@@ -70,11 +71,12 @@ export function TopBar() {
                   <AvatarsGroup items={OrgData.users ? OrgData.users : []} />
                 </div>
                 <div>
-                  <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                  <InviteUser></InviteUser>
+                  {/* <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
                     <span className="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-black text-xl">
                       +
                     </span>
-                  </span>
+                  </span> */}
                 </div>
               </div>
             </div>

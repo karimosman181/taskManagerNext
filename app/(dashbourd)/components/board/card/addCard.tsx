@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { ElementRef, useRef, useState } from "react";
+import { ElementRef, useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -13,6 +13,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import Image from 'next/image';
 
 import { Textarea } from "@/components/ui/textarea";
 
@@ -31,6 +33,8 @@ import {
 } from "@/app/api/account/organizations/cards/route";
 
 import { useBoard } from "@/contexts/BoardContext";
+import { useApp } from "@/contexts/AppContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const colors = [
   "bg-lime-700",
@@ -47,8 +51,25 @@ interface AddCardProps {
   list_id: string;
 }
 
+async function getOrganization(org_id: string) {
+  const response = await fetch("/api/account/organizations/" + org_id, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json();
+
+  return JSON.parse(JSON.stringify(data));
+}
+
 export const AddCard = ({ list_id }: AddCardProps) => {
   const router = useRouter();
+
+  const {
+    userSelectedOrg,
+  } = useApp();
 
   const [listId, setListId] = useState(list_id);
   const { reLoad, setReLoad } = useBoard();
@@ -59,8 +80,32 @@ export const AddCard = ({ list_id }: AddCardProps) => {
   const [color, setColor] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedUsers, setSelectedUsers] = useState([]);
 
   const [open, setOpen] = useState(false);
+  const [openUser, setOpenUser] = useState(false);
+
+
+  const [OrgData, setOrgData] = useState<any>(null);
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    if (userSelectedOrg?.selectedOrg)
+      getOrganization(userSelectedOrg?.selectedOrg)
+        .then((data) => {
+          if (data) {
+            setOrgData(data);
+          }
+        })
+        .catch(() => {
+          console.error("Something went wrong!");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+  }, [userSelectedOrg]);
+
 
   const handleCreateCard = async () => {
     if (isLoading) return;
@@ -75,6 +120,7 @@ export const AddCard = ({ list_id }: AddCardProps) => {
         title: titleRef.current?.value,
         description: descriptionRef.current?.value,
         color: color,
+        content: contentRef.current?.value,
         listId: listId,
       };
 
@@ -117,10 +163,10 @@ export const AddCard = ({ list_id }: AddCardProps) => {
         <DialogTrigger asChild>
           <button
             // onClick={enableEditing}
-            className="flex flex-wrap flex-row text-green-900 gap-0.5"
+            className="flex flex-wrap flex-row text-green-900 gap-0.25"
           >
-            <Plus className="text-md" />
-            Add Card
+            <Plus className="text-sm" />
+            <span className="text-sm flex self-center">Add Card</span>
           </button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[675px]">
@@ -208,12 +254,70 @@ export const AddCard = ({ list_id }: AddCardProps) => {
               <Label>Members</Label>
               <div className="flex flex-wrap gap-2">
                 <div></div>
+                <Dialog open={openUser} onOpenChange={setOpenUser}>
+                  <DialogTrigger asChild>
+                    <button
+                      className="flex flex-wrap flex-row text-green-900 gap-0.25"
+                    >
+                      <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
+                        <span className="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-black text-xl">
+                          +
+                        </span>
+                      </span>
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[500px]">
+                    <DialogHeader>
+                      <DialogTitle>Select User</DialogTitle>
+                      <DialogDescription>
+                        select user to assign to the selected card.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                      <Select>
+                        <SelectTrigger className="w-full" >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {OrgData && OrgData.users ? OrgData.users.map((user: any, index: any) => (
+                            <SelectItem key={index} value={index + ""} >
+                              <div className="mb-4 grid grid-rows-1 grid-cols-[24px_1fr]  gap-x-5 items-start pb-4 last:mb-0 last:pb-0 cursor-pointer">
+                                {/* <Image src={user.User.avatar ? user.User.avatar : 'avatars/org/org1.svg'} alt='organization avatar' width={150} height={150} className='rounded-full border-1 border-solid border-black' /> */}
+                                <Avatar>
+                                  <AvatarImage src={user.User.avatar} />
+                                  <AvatarFallback>
+                                    {user.User.firstName.slice(0, 1) +
+                                      "" +
+                                      user.User.lastName.slice(0, 1)}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div className="space-y-1 flex self-center">
+                                  <p className="text-sm font-medium leading-none ">
+                                    {user.User.firstName + " " + user.User.lastName}
+                                  </p>
+                                </div>
+                              </div>
+                            </SelectItem>
+                          )) : ""}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+
+                    <DialogFooter>
+                      <div className="flex flex-col w-full">
+                        <button
+                          className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                          type="submit"
+                        >
+                          Select
+                          <BottomGradient />
+                        </button>
+                      </div>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
                 <div>
-                  <span className="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full">
-                    <span className="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-black text-xl">
-                      +
-                    </span>
-                  </span>
                 </div>
               </div>
             </div>

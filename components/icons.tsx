@@ -28,6 +28,7 @@ import {
   UsersRound,
   Ellipsis,
   Pencil,
+  MessageCircleMore,
   type Icon as LucideIcon,
   EllipsisVertical,
 } from "lucide-react";
@@ -46,6 +47,7 @@ export const Icons = {
   media: Image,
   settings: Settings,
   billing: CreditCard,
+  message: MessageCircleMore,
   tasks: PanelsLeftBottom,
   groups: UsersRound,
   EllipsisVertical: MoreVertical,

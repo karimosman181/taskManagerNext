@@ -8,7 +8,7 @@ export interface I_ApiCardCreateRequest {
   title: string;
   description: string;
   color: string;
-  content?: Text;
+  content?: string;
 }
 
 export interface I_ApiCardOrderUpdateRequest {
