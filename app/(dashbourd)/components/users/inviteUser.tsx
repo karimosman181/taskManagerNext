@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { ElementRef, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { I_ApiInviteUserRequest, I_ApiInviteUserResponse } from "@/app/api/users/invite/route";
 
 
 
@@ -25,6 +26,13 @@ export const InviteUser = () => {
     const formRef = useRef<ElementRef<"form">>(null);
     const emailRef = useRef<ElementRef<"input">>(null);
 
+    const validateEmail = (email: string) => {
+        return email.match(
+            /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+    };
+
+
     const handleInviteUser = async () => {
         if (isLoading) return;
 
@@ -35,6 +43,27 @@ export const InviteUser = () => {
             if (!emailRef.current?.value)
                 throw new Error("Please enter all required fields.");
 
+            if (!validateEmail(emailRef.current?.value))
+                throw new Error("Email is invalid.");
+
+            const payload: I_ApiInviteUserRequest = {
+                email: emailRef.current?.value,
+            };
+
+            const response = await fetch("/api/users/invite", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data: I_ApiInviteUserResponse = await response.json();
+
+            if (data.success) {
+            } else {
+                throw new Error(data.message);
+            }
 
         } catch (error) {
             let mess = "Something went wrong.";
