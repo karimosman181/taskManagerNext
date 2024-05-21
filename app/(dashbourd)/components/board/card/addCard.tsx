@@ -1,7 +1,7 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import { ElementRef, useEffect, useRef, useState } from "react";
+import { ElementRef, RefObject, useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,7 @@ import {
 import { useBoard } from "@/contexts/BoardContext";
 import { useApp } from "@/contexts/AppContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import AvatarsGroup from "../../ui/avatarsgroup";
 
 const colors = [
   "bg-lime-700",
@@ -74,13 +75,13 @@ export const AddCard = ({ list_id }: AddCardProps) => {
   const [listId, setListId] = useState(list_id);
   const { reLoad, setReLoad } = useBoard();
   const formRef = useRef<ElementRef<"form">>(null);
-  const titleRef = useRef<ElementRef<"input">>(null);
+  const titleRef: RefObject<HTMLInputElement> = useRef<ElementRef<"input">>(null);
   const descriptionRef = useRef<ElementRef<"input">>(null);
   const contentRef = useRef<ElementRef<"textarea">>(null);
   const [color, setColor] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState<any[]>();
 
   const [open, setOpen] = useState(false);
   const [openUser, setOpenUser] = useState(false);
@@ -106,6 +107,28 @@ export const AddCard = ({ list_id }: AddCardProps) => {
         });
   }, [userSelectedOrg]);
 
+
+  const handleAddusers = async (e: any) => {
+    let users = selectedUsers;
+
+    const selectedUser = OrgData.users[e];
+
+    if (users) {
+      const exits = users!.find(user => user.id === selectedUser.id);
+
+      if (!exits) {
+        users?.push(selectedUser);
+      }
+    } else {
+      users = [];
+
+      users.push(selectedUser);
+    }
+
+    setSelectedUsers(users);
+
+    setOpenUser(false);
+  }
 
   const handleCreateCard = async () => {
     if (isLoading) return;
@@ -253,7 +276,9 @@ export const AddCard = ({ list_id }: AddCardProps) => {
             <div className="grid w-full gap-1.5">
               <Label>Members</Label>
               <div className="flex flex-wrap gap-2">
-                <div></div>
+                <div>
+                  <AvatarsGroup items={selectedUsers ? selectedUsers : []} />
+                </div>
                 <Dialog open={openUser} onOpenChange={setOpenUser}>
                   <DialogTrigger asChild>
                     <button
@@ -274,7 +299,7 @@ export const AddCard = ({ list_id }: AddCardProps) => {
                       </DialogDescription>
                     </DialogHeader>
                     <div className="py-4">
-                      <Select>
+                      <Select onValueChange={(e) => { handleAddusers(e) }}>
                         <SelectTrigger className="w-full" >
                           <SelectValue />
                         </SelectTrigger>
@@ -302,19 +327,6 @@ export const AddCard = ({ list_id }: AddCardProps) => {
                         </SelectContent>
                       </Select>
                     </div>
-
-
-                    <DialogFooter>
-                      <div className="flex flex-col w-full">
-                        <button
-                          className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-                          type="submit"
-                        >
-                          Select
-                          <BottomGradient />
-                        </button>
-                      </div>
-                    </DialogFooter>
                   </DialogContent>
                 </Dialog>
                 <div>

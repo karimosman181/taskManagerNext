@@ -9,14 +9,19 @@ interface OrganizationUsersProps {
 
 export default function AvatarsGroup({ items }: OrganizationUsersProps) {
   const [avatarsTotal, setAvatarsTotal] = useState(0);
+  const [users, setUsers] = useState<OrganizationUsersItem[]>()
+
   useEffect(() => {
+
+    setUsers(items);
     setAvatarsTotal(items.slice(3).length);
-  }, []);
+
+  }, [items]);
 
   return (
     <>
       <div className="flex -space-x-3 *:ring *:ring-white">
-        {items.slice(0, 3).map((avatar, index) => {
+        {users && users.slice(0, 3).map((avatar, index) => {
           return (
             <Avatar key={index}>
               <AvatarImage src={avatar.User.avatar} />
