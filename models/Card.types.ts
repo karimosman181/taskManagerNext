@@ -1,3 +1,5 @@
+import { I_UserCardPublic } from "./UserCard.types";
+
 export interface I_Card {
   id: string;
   listId: string;
@@ -29,4 +31,6 @@ export interface I_CardCreate
     // | "tags"
   > {}
 
-export interface I_CardPublic extends I_Card {}
+export interface I_CardPublic extends I_Card {
+  UserCards: I_UserCardPublic[];
+}

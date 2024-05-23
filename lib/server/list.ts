@@ -1,10 +1,4 @@
-import {
-  UserOrganization,
-  User,
-  Organization,
-  List,
-  Card,
-} from "@/models/associations";
+import { Organization, List, Card } from "@/models/associations";
 import { cookies } from "next/headers";
 import { I_ListCreate, I_ListPublic } from "@/models/List.types";
 
@@ -22,7 +16,18 @@ export async function getLists() {
         organizationId: selectedOrg.selectedOrg,
         deletedAt: null,
       },
-      include: [{ model: Card, as: "ListCards" }],
+      include: [
+        {
+          model: Card,
+          as: "ListCards",
+          include: [
+            {
+              all: true,
+              nested: true,
+            },
+          ],
+        },
+      ],
       order: [
         ["order", "ASC"],
         ["ListCards", "order", "ASC"],

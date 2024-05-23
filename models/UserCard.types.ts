@@ -1,3 +1,5 @@
+import { I_UserPublic } from "./User.types";
+
 export interface I_UserCard {
   id: string;
   userId: string;
@@ -12,3 +14,7 @@ export interface I_UserCardCreate
     I_UserCard,
     "id" | "userId" | "cardId" | "createdAt" | "updatedAt" | "deletedAt"
   > {}
+
+export interface I_UserCardPublic extends I_UserCard {
+  User: I_UserPublic;
+}

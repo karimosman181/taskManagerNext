@@ -104,24 +104,18 @@ export const CardItem = ({ data, index }: ListItemProps) => {
                     </div>
                     <div>
                       <div className="flex -space-x-2 *:ring *:ring-white">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={""} />
-                          <AvatarFallback>
-                            TT
-                          </AvatarFallback>
-                        </Avatar>
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={""} />
-                          <AvatarFallback>
-                            TT
-                          </AvatarFallback>
-                        </Avatar>
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={""} />
-                          <AvatarFallback>
-                            TT
-                          </AvatarFallback>
-                        </Avatar>
+                        {data.UserCards && data.UserCards.length > 0 ?
+                          data.UserCards.map((userCard, index) => (
+                            <Avatar key={index} className="h-8 w-8">
+                              <AvatarImage src={userCard.User.avatar} />
+                              <AvatarFallback>
+                                {userCard.User.firstName.slice(0, 1) +
+                                  "" +
+                                  userCard.User.lastName.slice(0, 1)}
+                              </AvatarFallback>
+                            </Avatar>
+                          ))
+                          : ""}
                       </div>
                     </div>
                   </div>
@@ -247,24 +241,18 @@ export const CardItem = ({ data, index }: ListItemProps) => {
               <div className="flex flex-wrap gap-2 mt-4">
                 <div>
                   <div className="flex -space-x-2 *:ring *:ring-white">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={""} />
-                      <AvatarFallback>
-                        TT
-                      </AvatarFallback>
-                    </Avatar>
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={""} />
-                      <AvatarFallback>
-                        TT
-                      </AvatarFallback>
-                    </Avatar>
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={""} />
-                      <AvatarFallback>
-                        TT
-                      </AvatarFallback>
-                    </Avatar>
+                    {data.UserCards && data.UserCards.length > 0 ?
+                      data.UserCards.map((userCard, index) => (
+                        <Avatar key={index} className="h-8 w-8">
+                          <AvatarImage src={userCard.User.avatar} />
+                          <AvatarFallback>
+                            {userCard.User.firstName.slice(0, 1) +
+                              "" +
+                              userCard.User.lastName.slice(0, 1)}
+                          </AvatarFallback>
+                        </Avatar>
+                      ))
+                      : ""}
                   </div>
                 </div>
                 {editing ? (
