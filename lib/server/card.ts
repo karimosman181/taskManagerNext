@@ -62,6 +62,31 @@ export async function createCard(ListId: string, data: I_CardCreate) {
   }
 }
 
+export async function linkUserCard(CardId: string, user: UserOrganization) {
+  try {
+    const userDb = await User.findByPk(user.userId);
+
+    if (!userDb) {
+      throw new Error("User not found");
+    }
+
+    const card = await Card.findByPk(CardId);
+
+    if (!card) {
+      throw new Error("Card not found");
+    }
+
+    const userCard = await userDb?.createUserCard();
+
+    await card.addUserCard(userCard);
+
+    return card;
+  } catch (_) {
+    console.log(_);
+    return null;
+  }
+}
+
 export async function updateCardOrder(data: {
   id: string;
   order: number;

@@ -145,6 +145,7 @@ export const AddCard = ({ list_id }: AddCardProps) => {
         color: color,
         content: contentRef.current?.value,
         listId: listId,
+        users: selectedUsers
       };
 
       const response = await fetch("/api/account/organizations/cards", {

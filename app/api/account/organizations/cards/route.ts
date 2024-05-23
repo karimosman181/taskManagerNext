@@ -1,7 +1,9 @@
 import { NextResponse, NextRequest } from "next/server";
 import { apiErrorResponse } from "@/lib/server/api/errorResponse";
 import { I_CardPublic } from "@/models/Card.types";
-import { createCard, updateCardOrder } from "@/lib/server/card";
+import { createCard, linkUserCard, updateCardOrder } from "@/lib/server/card";
+import UserOrganization from "@/models/UserOrganization.model";
+import Card from "@/models/Card.model";
 
 export interface I_ApiCardCreateRequest {
   listId: string;
@@ -9,6 +11,7 @@ export interface I_ApiCardCreateRequest {
   description: string;
   color: string;
   content?: string;
+  users?: UserOrganization[];
 }
 
 export interface I_ApiCardOrderUpdateRequest {
@@ -22,7 +25,13 @@ export async function POST(request: NextRequest) {
 
   // trim all input values
   const { title, description, color, content, listId } = Object.fromEntries(
-    Object.entries(body).map(([key, value]) => [key, value?.trim()])
+    Object.entries(body).map(([key, value]) => {
+      if (typeof value === "string") {
+        return [key, value?.trim()];
+      } else {
+        return [key, value];
+      }
+    })
   ) as I_ApiCardCreateRequest;
   if (!title || !description || !color || !listId) {
     const res: I_ApiCardCreateResponse = {
@@ -32,8 +41,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(res, { status: 400 });
   }
 
+  const users = body.users;
+
   try {
-    const card: any = await createCard(listId, {
+    const card: Card | null = await createCard(listId, {
       title,
       description,
       color,
@@ -41,6 +52,12 @@ export async function POST(request: NextRequest) {
     });
 
     if (card) {
+      if (users && users.length > 0) {
+        users.map(async (userOrg, index) => {
+          const card2 = await linkUserCard(card.id, userOrg);
+        });
+      }
+
       const res: I_ApiCardCreateResponse = {
         success: true,
         message: "Card Created",
